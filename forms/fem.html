@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEM — Family Expense Management</title>
+
+    <style>
+        /* --- THEME SYSTEM VARIABLES --- */
+        :root {
+            --po-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --po-body-bg: #f7f7f7;
+            --po-card-bg: #ffffff;
+            --po-header-bg: #ffffff;
+            --po-primary: #0088cc;
+            --po-primary-hover: #0077b3;
+            --po-primary-light: #e6f4fc;
+            --po-success: #47a447;
+            --po-success-light: #eaf6ea;
+            --po-danger: #d2322d;
+            --po-danger-light: #fdf3f2;
+            --po-warning: #ed9c28;
+            --po-warning-light: #fef7ee;
+            --po-text-dark: #2e353e;
+            --po-text-gray: #777777;
+            --po-text-muted: #aaaaaa;
+            --po-border: #e2e2e2;
+            --po-radius: 4px; 
+            --po-shadow-xs: 0 1px 1px rgba(0,0,0,0.05);
+            --po-shadow: 0 1px 19px rgba(0, 0, 0, 0.04);
+            --transition: all 0.12s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--po-font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--po-body-bg);
+            color: var(--po-text-dark);
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* --- STICKY NAV HEADER --- */
+        .po-header {
+            background-color: var(--po-header-bg);
+            border-bottom: 1px solid var(--po-border);
+            border-top: 3px solid var(--po-primary); 
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--po-shadow-xs);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .po-app-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .po-content {
+            padding: 25px;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            contain: content; 
+        }
+
+        .po-brand {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--po-text-dark);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+
+        .po-brand span {
+            color: var(--po-primary);
+            font-weight: 400;
+        }
+
+        /* --- BUTTON CORE ARCHEOTYPE --- */
+        .btn-po {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: var(--po-radius);
+            border: 1px solid var(--po-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            background-color: var(--po-primary);
+            color: #ffffff;
+            text-decoration: none;
+            user-select: none;
+        }
+        
+        .btn-po:hover {
+            background-color: var(--po-primary-hover);
+            border-color: var(--po-primary-hover);
+        }
+
+        .btn-po.active {
+            background-color: var(--po-primary-hover);
+            border-color: var(--po-primary-hover);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .btn-po-danger-variant {
+            background-color: var(--po-danger);
+            border-color: var(--po-danger);
+        }
+        .btn-po-danger-variant:hover {
+            background-color: #bd2a25;
+            border-color: #bd2a25;
+        }
+
+        .po-nav-strip, .po-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .po-input-control {
+            border: 1px solid var(--po-border);
+            background-color: #ffffff;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: var(--po-radius);
+            color: var(--po-text-dark);
+            outline: none;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            height: 31px;
+            transition: border-color var(--transition);
+        }
+        .po-input-control:focus {
+            border-color: #66afe9;
+        }
+
+        /* --- METRICS INTERACTIVE MATRIX --- */
+        .po-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .po-panel-widget {
+            background-color: var(--po-card-bg);
+            border-radius: var(--po-radius);
+            box-shadow: var(--po-shadow-xs);
+            border: 1px solid var(--po-border);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            contain: layout;
+        }
+
+        .po-widget-body {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .po-widget-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--po-text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .po-widget-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--po-text-dark);
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .po-widget-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background-color: #f3f3f3;
+            flex-shrink: 0;
+        }
+        .w-inc .po-widget-icon-box { background-color: var(--po-success-light); color: var(--po-success); }
+        .w-exp .po-widget-icon-box { background-color: var(--po-danger-light); color: var(--po-danger); }
+        .w-sav .po-widget-icon-box { background-color: var(--po-primary-light); color: var(--po-primary); }
+        .w-bal .po-widget-icon-box { background-color: var(--po-warning-light); color: var(--po-warning); }
+
+        /* --- MAIN REGISTRY TABLE STREAMS --- */
+        .po-panel {
+            background-color: var(--po-card-bg);
+            border-radius: var(--po-radius);
+            box-shadow: var(--po-shadow-xs);
+            border: 1px solid var(--po-border);
+            margin-bottom: 25px;
+            contain: content;
+        }
+
+        .po-panel-header {
+            padding: 15px 20px;
+            background: #fbfbfb;
+            border-bottom: 1px solid var(--po-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .po-panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--po-text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .po-table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .po-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .po-table th {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--po-text-dark);
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--po-border);
+            background-color: #fdfdfd;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .po-table td {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: var(--po-text-dark);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .po-table tr:hover td {
+            background-color: #fafafa;
+        }
+
+        /* --- SYSTEM UTILITY BADGES --- */
+        .po-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .badge-success { background-color: var(--po-success); color: #ffffff; }
+        .badge-danger { background-color: var(--po-danger); color: #ffffff; }
+        .badge-primary { background-color: var(--po-primary); color: #ffffff; }
+
+        /* --- SYSTEM FLOATING TRAY DIALOG LAYERS --- */
+        .po-modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease-in-out;
+            padding: 15px;
+            will-change: opacity;
+        }
+
+        .po-modal-backdrop.visible { opacity: 1; pointer-events: auto; }
+        
+        .po-modal {
+            background-color: var(--po-card-bg);
+            border-radius: var(--po-radius);
+            width: 100%;
+            max-width: 500px;
+            border-top: 4px solid var(--po-primary);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            transition: transform 0.15s ease-in-out;
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .po-modal-backdrop.visible .po-modal { transform: translateY(0); }
+
+        .po-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--po-border);
+            background-color: #fbfbfb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .po-modal-body { 
+            padding: 20px; 
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .po-form-group { margin-bottom: 15px; position: relative; }
+        .po-label { display: block; font-size: 11px; font-weight: 700; color: var(--po-text-dark); margin-bottom: 5px; text-transform: uppercase; }
+        
+        .po-segmented-nav { display: flex; border: 1px solid var(--po-border); border-radius: var(--po-radius); overflow: hidden; margin-bottom: 15px; }
+        .po-seg-opt { flex: 1; text-align: center; }
+        .po-seg-opt input { display: none; }
+        .po-seg-label { display: block; padding: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--po-text-gray); background: #f6f6f6; transition: var(--transition); }
+        #r-inc:checked + .po-seg-label { background-color: var(--po-success); color: #ffffff; }
+        #r-exp:checked + .po-seg-label { background-color: var(--po-danger); color: #ffffff; }
+        #r-sav:checked + .po-seg-label { background-color: var(--po-primary); color: #ffffff; }
+
+        .po-eraser { position: absolute; right: 10px; top: 28px; background: #e5e5e5; border: none; width: 18px; height: 18px; border-radius: 50%; font-size: 9px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 5; }
+        .po-autocomplete { position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 1px solid var(--po-border); border-radius: var(--po-radius); max-height: 150px; overflow-y: auto; z-index: 1100; box-shadow: var(--po-shadow); margin-top: 2px; }
+        .po-suggest-item { padding: 8px 12px; cursor: pointer; display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid #f5f5f5; }
+        .po-suggest-item:hover { background-color: #f0f0f0; }
+
+        .po-empty { padding: 35px; text-align: center; color: var(--po-text-gray); background-color: #fbfbfb; border: 1px dashed var(--po-border); border-radius: var(--po-radius); margin: 20px; }
+
+        /* ANALYTICAL REPORT CANVAS OBJECTS */
+        .po-rpt-box { border: 1px solid var(--po-border); margin-top: 15px; border-radius: var(--po-radius); overflow: hidden; }
+        .po-rpt-table { width: 100%; border-collapse: collapse; background: #ffffff; }
+        .po-rpt-table th { background-color: #f6f6f6; color: var(--po-text-dark); padding: 10px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--po-border); }
+        .po-rpt-table td { padding: 10px; border-bottom: 1px solid var(--po-border); font-size: 12px; }
+        .po-rpt-sec { background-color: #fafafa; font-weight: 700; color: var(--po-primary); }
+        .po-rpt-tot { font-weight: 700; background-color: #ededed; }
+
+        /* --- RESPONSIVE LIQUID MEDIA RUNTIMES --- */
+        @media (max-width: 840px) {
+            .po-header { flex-direction: column; align-items: stretch; text-align: center; padding: 15px; }
+            .po-nav-strip, .po-header-actions { justify-content: center; width: 100%; }
+            .po-header-actions .po-input-control, .po-header-actions .btn-po { flex: 1; }
+            
+            .po-table, .po-table thead, .po-table tbody, .po-table th, .po-table td, .po-table tr { display: block; }
+            .po-table thead tr { position: absolute; top: -9999px; left: -9999px; }
+            .po-table tr { border: 1px solid var(--po-border); margin-bottom: 12px; border-radius: var(--po-radius); background: #fff; padding: 5px 0; }
+            .po-table td { border: none; border-bottom: 1px solid #f9f9f9; position: relative; padding-left: 45%; text-align: right; white-space: normal; min-height: 38px; }
+            .po-table td:last-child { border-bottom: none; }
+            .po-table td:before { position: absolute; top: 12px; left: 15px; width: 40%; padding-right: 10px; white-space: nowrap; text-align: left; font-weight: 700; color: var(--po-text-gray); content: attr(data-label); font-size: 11px; text-transform: uppercase; }
+            .po-table td[data-label="Actions"] div { justify-content: flex-end !important; }
+            .po-panel-header { flex-direction: column; align-items: stretch; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .po-nav-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .po-header-actions { flex-direction: column; align-items: stretch; }
+            .po-table td { padding-left: 50%; }
+            .po-table td:before { width: 45%; }
+        }
+    </style>
+</head>
+<body onclick="globallyCloseActiveSuggestionTrays(event)">
+
+    <!-- --- CONTROL HEADER INTERACTION SYSTEM --- -->
+    <header class="po-header">
+        <a href="#" class="po-brand">FEM<span> LEDGER</span></a>
+        
+        <nav class="po-nav-strip">
+            <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="btn-po active">DASHBOARD</button>
+            <button onclick="toggleLedgerModalDisplayState(true)" class="btn-po">LOG OPERATION</button>
+            <button onclick="toggleModalDisplayState(true)" class="btn-po">RULE MAPS</button>
+            <button onclick="toggleReportsModalDisplayState(true)" class="btn-po">REPORTS</button>
+            <button onclick="DOM.csvGhost.click()" class="btn-po">IMPORT CSV</button>
+            <button onclick="exportDataToCSV()" class="btn-po">EXPORT CSV</button>
+        </nav>
+        
+        <div class="po-header-actions">
+            <input type="month" id="workspace-month" class="po-input-control" onchange="switchWorkspaceMonthContext()">
+            <button type="button" onclick="toggleLedgerModalDisplayState(true)" class="btn-po">+ ADD NEW</button>
+            <input type="file" id="csv-upload-ghost" style="display:none;" accept=".csv" onchange="importDataViaCSV(event)">
+        </div>
+    </header>
+
+    <!-- --- WORKSPACE METRIC VIEWS --- -->
+    <div class="po-app-wrapper">
+        <main class="po-content">
+            
+            <section class="po-metrics-grid">
+                <div class="po-panel-widget w-inc">
+                    <div class="po-widget-body">
+                        <span class="po-widget-title">Gross Inflows</span>
+                        <span id="stat-income" class="po-widget-value">BDT 0.00</span>
+                    </div>
+                    <div class="po-widget-icon-box">↓</div>
+                </div>
+                <div class="po-panel-widget w-exp">
+                    <div class="po-widget-body">
+                        <span class="po-widget-title">Capital Outflows</span>
+                        <span id="stat-expenses" class="po-widget-value">BDT 0.00</span>
+                    </div>
+                    <div class="po-widget-icon-box">↑</div>
+                </div>
+                <div class="po-panel-widget w-sav">
+                    <div class="po-widget-body">
+                        <span class="po-widget-title">Cash Reserves</span>
+                        <span id="stat-savings" class="po-widget-value">BDT 0.00</span>
+                    </div>
+                    <div class="po-widget-icon-box">🏦</div>
+                </div>
+                <div class="po-panel-widget w-bal">
+                    <div class="po-widget-body">
+                        <span class="po-widget-title">Net Surplus Yield</span>
+                        <span id="stat-balance" class="po-widget-value">BDT 0.00</span>
+                    </div>
+                    <div class="po-widget-icon-box">⚖️</div>
+                </div>
+            </section>
+
+            <div class="po-panel">
+                <div class="po-panel-header">
+                    <h2 class="po-panel-title">RECORD DATASET</h2>
+                    <button type="button" onclick="exportDataToCSV()" class="btn-po">EXPORT CSV</button>
+                </div>
+                
+                <div class="po-table-container">
+                    <table class="po-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Group</th>
+                                <th>Type</th>
+                                <th style="text-align: right;">Amount</th>
+                                <th style="text-align: right; padding-right: 25px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-rows-target"></tbody>
+                    </table>
+                </div>
+
+                <div id="ledger-empty-notice" class="po-empty">
+                    <p style="margin-bottom: 12px; font-weight: 700; text-transform: uppercase; font-size:11px; color:var(--po-text-gray);">No operational records found matching this timeline.</p>
+                    <div id="prev-month-import-container" style="display: none;">
+                        <button type="button" onclick="executePreviousMonthRollover()" class="btn-po">
+                            ⚡ Mirror Historic Month Directive Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- --- DIRECTIVE MAPPING RULES MODAL --- -->
+    <div id="configuration-modal-tray" class="po-modal-backdrop" onclick="if(event.target === this) toggleModalDisplayState(false)">
+        <div class="po-modal">
+            <div class="po-modal-header">
+                <h3 class="po-panel-title">Adjust Allocation</h3>
+                <button type="button" onclick="toggleModalDisplayState(false)" style="background:none; border:none; font-size:14px; cursor:pointer; color:var(--po-text-gray);">✕</button>
+            </div>
+            <div class="po-modal-body">
+                <form id="modal-configuration-form" onsubmit="commitNewModalMappingStructure(event)" autocomplete="off">
+                    <div class="po-form-group">
+                        <label class="po-label">Allocation Type</label>
+                        <select id="modal-type-selection" class="po-input-control" style="width:100%; height:34px;" onchange="clearModalAutocompletes()">
+                            <option value="income">Inflow Channels Matrix</option>
+                            <option value="expense">Outflow Spending Channels</option>
+                            <option value="savings">Reserves Savings Channels</option>
+                        </select>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">New Line Item</label>
+                        <input type="text" id="modal-input-line-item" class="po-input-control prevent-global-dismiss" style="width:100%;" required placeholder="e.g. Corporate Infrastructure Cloud..." oninput="evaluateInputFieldContentState('modal-input-line-item', 'btn-clear-m-line'); cachedModalLineSuggestions(this.value);" onfocus="evaluateInputFieldContentState('modal-input-line-item', 'btn-clear-m-line'); cachedModalLineSuggestions(this.value);">
+                        <button type="button" id="btn-clear-m-line" class="po-eraser" onclick="clearTargetedInputNodeField('modal-input-line-item', 'btn-clear-m-line'); clearModalAutocompletes();">✕</button>
+                        <div id="modal-line-autocomplete-tray" class="po-autocomplete" style="display:none;"></div>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">New Category</label>
+                        <input type="text" id="modal-input-category-group" class="po-input-control prevent-global-dismiss" style="width:100%;" required placeholder="e.g. Monthly Operational Overhead..." oninput="evaluateInputFieldContentState('modal-input-category-group', 'btn-clear-m-cat'); cachedModalCategorySuggestions(this.value);" onfocus="evaluateInputFieldContentState('modal-input-category-group', 'btn-clear-m-cat'); cachedModalCategorySuggestions(this.value);">
+                        <button type="button" id="btn-clear-m-cat" class="po-eraser" onclick="clearTargetedInputNodeField('modal-input-category-group', 'btn-clear-m-cat'); clearModalAutocompletes();">✕</button>
+                        <div id="modal-cat-autocomplete-tray" class="po-autocomplete" style="display:none;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+                        <button type="button" onclick="toggleModalDisplayState(false)" class="btn-po btn-po-danger-variant">EXIT</button>
+                        <button type="submit" class="btn-po">SAVE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- LOGGING TRANSACTION TRAY MODAL --- -->
+    <div id="ledger-entry-modal-tray" class="po-modal-backdrop" onclick="if(event.target === this) toggleLedgerModalDisplayState(false)">
+        <div class="po-modal">
+            <div class="po-modal-header">
+                <h3 class="po-panel-title">Financial Statement Entry</h3>
+                <button type="button" onclick="toggleLedgerModalDisplayState(false)" style="background:none; border:none; font-size:14px; cursor:pointer; color:var(--po-text-gray);">✕</button>
+            </div>
+            <div class="po-modal-body">
+                <form id="ledger-entry-form" onsubmit="commitNewFormStatement(event)" autocomplete="off">
+                    <div class="po-segmented-nav">
+                        <div class="po-seg-opt">
+                            <input type="radio" name="entry_type" id="r-inc" value="income" checked onchange="clearLiveSearchState()">
+                            <label for="r-inc" class="po-seg-label">Inflow</label>
+                        </div>
+                        <div class="po-seg-opt">
+                            <input type="radio" name="entry_type" id="r-exp" value="expense" onchange="clearLiveSearchState()">
+                            <label for="r-exp" class="po-seg-label">Outflow</label>
+                        </div>
+                        <div class="po-seg-opt">
+                            <input type="radio" name="entry_type" id="r-sav" value="savings" onchange="clearLiveSearchState()">
+                            <label for="r-sav" class="po-seg-label">Reserves</label>
+                        </div>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">Line Item</label>
+                        <input type="text" id="search-line-item" class="po-input-control prevent-global-dismiss" style="width:100%;" placeholder="Query registered mapping targets..." oninput="evaluateInputFieldContentState('search-line-item', 'btn-clear-search'); cachedLiveSearchSuggestions(this.value);" onfocus="evaluateInputFieldContentState('search-line-item', 'btn-clear-search'); cachedLiveSearchSuggestions(this.value);">
+                        <button type="button" id="btn-clear-search" class="po-eraser" onclick="clearTargetedInputNodeField('search-line-item', 'btn-clear-search'); clearLiveSearchState();">✕</button>
+                        <div id="autocomplete-panel-tray" class="po-autocomplete" style="display:none;"></div>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">Category</label>
+                        <input type="text" id="display-bound-category" class="po-input-control" style="width:100%; background-color: #fafafa; color: var(--po-text-gray);" readonly placeholder="System mapped channel data text...">
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">Amount (BDT)</label>
+                        <input type="number" step="0.01" id="field-amount" class="po-input-control" style="width:100%;" required placeholder="0.00" oninput="evaluateInputFieldContentState('field-amount', 'btn-clear-amount')">
+                        <button type="button" id="btn-clear-amount" class="po-eraser" style="top: 28px;" onclick="clearTargetedInputNodeField('field-amount', 'btn-clear-amount')">✕</button>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">Entry Date</label>
+                        <input type="date" id="field-date" class="po-input-control" style="width:100%;">
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+                        <button type="button" onclick="toggleLedgerModalDisplayState(false)" class="btn-po btn-po-danger-variant">CLOSE</button>
+                        <button type="submit" class="btn-po">SAVE RECORD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- ANALYTICAL REPORTS ENGINE MODAL --- -->
+    <div id="reports-parameter-modal-tray" class="po-modal-backdrop" onclick="if(event.target === this) toggleReportsModalDisplayState(false)">
+        <div class="po-modal" style="max-width:600px;">
+            <div class="po-modal-header">
+                <h3 class="po-panel-title">Reports Engine</h3>
+                <button type="button" onclick="toggleReportsModalDisplayState(false)" style="background:none; border:none; font-size:14px; cursor:pointer; color:var(--po-text-gray);">✕</button>
+            </div>
+            <div class="po-modal-body">
+                <form id="reports-parameter-form" onsubmit="executeFinancialHTMLReportCompilation(event)">
+                    <div class="po-form-group">
+                        <label class="po-label">Report Name</label>
+                        <select id="rpt-param-type" class="po-input-control" style="width:100%; height:34px;">
+                            <option value="line-item">Line-Item Distribution Target Matrix Analysis</option>
+                            <option value="group-wise">Group Pipeline Aggregated Volume Balance Sheets</option>
+                            <option value="p-and-l">Corporate Structured Profit and Loss (P&L) Account</option>
+                        </select>
+                    </div>
+                    <div class="po-form-group">
+                        <label class="po-label">Term</label>
+                        <select id="rpt-param-scale" class="po-input-control" style="width:100%; height:34px;" onchange="synchronizeReportParameterFormViewState()">
+                            <option value="monthly">Monthly Isolated Scope Timelines</option>
+                            <option value="yearly">Yearly Consolidated Target History Matrix</option>
+                        </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="po-form-group">
+                            <label class="po-label">Target Year</label>
+                            <select id="rpt-param-year" class="po-input-control" style="width:100%; height:34px;"></select>
+                        </div>
+                        <div class="po-form-group" id="rpt-month-dropdown-wrapper">
+                            <label class="po-label">Target Month</label>
+                            <select id="rpt-param-month" class="po-input-control" style="width:100%; height:34px;">
+                                <option value="01">January</option><option value="02">February</option>
+                                <option value="03">March</option><option value="04">April</option>
+                                <option value="05">May</option><option value="06">June</option>
+                                <option value="07">July</option><option value="08">August</option>
+                                <option value="09">September</option><option value="10">October</option>
+                                <option value="11">November</option><option value="12">December</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+                        <button type="button" onclick="toggleReportsModalDisplayState(false)" class="btn-po btn-po-danger-variant">Dismiss</button>
+                        <button type="submit" class="btn-po">📊 Compile Report</button>
+                    </div>
+                </form>
+
+                <div id="html-report-output-canvas" style="display:none; margin-top:20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- PERFORMANCE ARCHITECTURE ENGINE ENGINE RUNTIMES --- -->
+    <script>
+        const DOM = {
+            monthSelector: document.getElementById('workspace-month'),
+            ledgerTarget: document.getElementById('ledger-rows-target'),
+            emptyNotice: document.getElementById('ledger-empty-notice'),
+            prevImportBox: document.getElementById('prev-month-import-container'),
+            statIncome: document.getElementById('stat-income'),
+            statExpenses: document.getElementById('stat-expenses'),
+            statSavings: document.getElementById('stat-savings'),
+            statBalance: document.getElementById('stat-balance'),
+            csvGhost: document.getElementById('csv-upload-ghost'),
+            configModalForm: document.getElementById('modal-configuration-form'),
+            ledgerModalForm: document.getElementById('ledger-entry-form'),
+            configModalTray: document.getElementById('configuration-modal-tray'),
+            ledgerModalTray: document.getElementById('ledger-entry-modal-tray'),
+            reportsModalTray: document.getElementById('reports-parameter-modal-tray'),
+            rptYearSelect: document.getElementById('rpt-param-year'),
+            rptMonthSelect: document.getElementById('rpt-param-month'),
+            rptScaleSelect: document.getElementById('rpt-param-scale'),
+            rptTypeSelect: document.getElementById('rpt-param-type'),
+            rptMonthWrapper: document.getElementById('rpt-month-dropdown-wrapper'),
+            rptCanvas: document.getElementById('html-report-output-canvas'),
+            searchLineInput: document.getElementById('search-line-item'),
+            boundCatDisplay: document.getElementById('display-bound-category'),
+            fieldAmount: document.getElementById('field-amount'),
+            fieldDate: document.getElementById('field-date'),
+            modalLineInput: document.getElementById('modal-input-line-item'),
+            modalCatInput: document.getElementById('modal-input-category-group'),
+            modalTypeSelect: document.getElementById('modal-type-selection'),
+            liveTray: document.getElementById('autocomplete-panel-tray'),
+            modalLineTray: document.getElementById('modal-line-autocomplete-tray'),
+            modalCatTray: document.getElementById('modal-cat-autocomplete-tray')
+        };
+
+        let storageTransactionsDb = JSON.parse(localStorage.getItem('aura_tx_ledger_db')) || [];
+        let globalEditTargetRowId = null;
+
+        const baselineIncomeBindings = [
+            { item: "Monthly Salary", cat: "Salary" },
+            { item: "Monthly Overtime Bill", cat: "Overtime" },
+            { item: "Eid-Ul-Fitre Bonus", cat: "Bonus" },
+            { item: "Eid-Ul-Azha Bonus", cat: "Bonus" },
+            { item: "Special-1 Bonus", cat: "Bonus" },
+            { item: "Special-2 Bonus", cat: "Bonus" },
+            { item: "Yearly Profit Bonus", cat: "Bonus" },
+            { item: "Food Allowance", cat: "Allowance" },
+            { item: "Transport Allowance", cat: "Allowance" },
+            { item: "Night Allowance", cat: "Allowance" }
+        ];
+        const baselineExpenseBindings = [
+            { item: "House Rent", cat: "Household" },
+            { item: "Internet Bill", cat: "Internet" },
+            { item: "Electricity Bill", cat: "Electricity" },
+            { item: "Maid Bill", cat: "Household" },
+            { item: "Garbage Bill", cat: "City Corporation" },
+            { item: "Monthly School Fees", cat: "Education" },
+            { item: "Monthly Mobile Bill", cat: "Personal" },
+            { item: "Medicine Bill", cat: "Treatment" },
+            { item: "Loan Payment", cat: "Bank Expenses" },
+            { item: "Transport Cost", cat: "Transport" },
+            { item: "Travel Expenses", cat: "Travel" },
+            { item: "Monthly Payment (Teacher)", cat: "Education" }
+        ];
+        const baselineSavingsBindings = [
+            { item: "Monthly DPS", cat: "Bank Accounts" },
+            { item: "bKash Savings", cat: "Bank Accounts" }
+            
+        ];
+
+        let customIncomeRelations = JSON.parse(localStorage.getItem('a_inc_binds')) || baselineIncomeBindings;
+        let customExpenseRelations = JSON.parse(localStorage.getItem('a_exp_binds')) || baselineExpenseBindings;
+        let customSavingsRelations = JSON.parse(localStorage.getItem('a_sav_binds')) || baselineSavingsBindings;
+
+        const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        function parseAndFormatDateString(dateStr) {
+            if(!dateStr) return '';
+            const pieces = dateStr.split('-');
+            if(pieces.length !== 3) return dateStr;
+            const mIdx = parseInt(pieces[1], 10) - 1;
+            return (mIdx >= 0 && mIdx < 12) ? `${pieces[2]} ${MONTHS_SHORT[mIdx]} ${pieces[0].substring(2)}` : dateStr;
+        }
+
+        function debounce(func, delay = 40) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        function evaluateInputFieldContentState(inputId, clearBtnId) {
+            const inputField = document.getElementById(inputId);
+            const clearBtn = document.getElementById(clearBtnId);
+            if(inputField && clearBtn) {
+                clearBtn.style.display = inputField.value ? 'flex' : 'none';
+            }
+        }
+
+        function clearTargetedInputNodeField(inputId, clearBtnId) {
+            const inputField = document.getElementById(inputId);
+            const clearBtn = document.getElementById(clearBtnId);
+            if(inputField) {
+                inputField.value = '';
+                inputField.focus();
+            }
+            if(clearBtn) clearBtn.style.display = 'none';
+        }
+
+        function evaluateAllClearButtonVisualStates() {
+            evaluateInputFieldContentState('search-line-item', 'btn-clear-search');
+            evaluateInputFieldContentState('field-amount', 'btn-clear-amount');
+            evaluateInputFieldContentState('modal-input-line-item', 'btn-clear-m-line');
+            evaluateInputFieldContentState('modal-input-category-group', 'btn-clear-m-cat');
+        }
+
+        function initializeDefaultTimeframe() {
+            const dateObj = new Date();
+            if(!DOM.monthSelector.value) {
+                DOM.monthSelector.value = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            }
+            synchronizeFormInputDay();
+            populateReportParameterDropdownYears();
+        }
+
+        function synchronizeFormInputDay() {
+            const activePeriodStr = DOM.monthSelector.value;
+            const today = new Date();
+            if(activePeriodStr === `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`) {
+                DOM.fieldDate.value = today.toISOString().split('T')[0];
+            } else {
+                DOM.fieldDate.value = `${activePeriodStr}-01`;
+            }
+        }
+
+        function populateReportParameterDropdownYears() {
+            if(!DOM.rptYearSelect) return;
+            DOM.rptYearSelect.textContent = '';
+            const observedYears = new Set([new Date().getFullYear()]);
+            const totalTx = storageTransactionsDb.length;
+            for(let i = 0; i < totalTx; i++) {
+                const tx = storageTransactionsDb[i];
+                if(tx.recordMonth) {
+                    const extractedYear = parseInt(tx.recordMonth.split('-')[0], 10);
+                    if(!isNaN(extractedYear)) observedYears.add(extractedYear);
+                }
+            }
+            const sortedYears = Array.from(observedYears).sort((a,b)=>b-a);
+            const frag = document.createDocumentFragment();
+            sortedYears.forEach(yr => {
+                const nodeOption = document.createElement('option');
+                nodeOption.value = yr;
+                nodeOption.innerText = yr;
+                frag.appendChild(nodeOption);
+            });
+            DOM.rptYearSelect.appendChild(frag);
+        }
+
+        function persistDatabaseToDisk() {
+            try {
+                localStorage.setItem('aura_tx_ledger_db', JSON.stringify(storageTransactionsDb));
+                localStorage.setItem('a_inc_binds', JSON.stringify(customIncomeRelations));
+                localStorage.setItem('a_exp_binds', JSON.stringify(customExpenseRelations));
+                localStorage.setItem('a_sav_binds', JSON.stringify(customSavingsRelations));
+            } catch(e) {
+                console.error("Disk bottleneck:", e);
+            }
+            compileUserInterfaceMetrics();
+            populateReportParameterDropdownYears();
+        }
+
+        function toggleModalDisplayState(shouldShow) {
+            if (shouldShow) {
+                DOM.configModalTray.classList.add('visible');
+                DOM.modalLineInput.value = '';
+                DOM.modalCatInput.value = '';
+            } else {
+                DOM.configModalTray.classList.remove('visible');
+                DOM.configModalForm.reset();
+                clearModalAutocompletes();
+                evaluateAllClearButtonVisualStates();
+            }
+        }
+
+        function toggleLedgerModalDisplayState(shouldShow) {
+            if (shouldShow) {
+                DOM.ledgerModalTray.classList.add('visible');
+                synchronizeFormInputDay();
+                DOM.searchLineInput.value = '';
+                DOM.boundCatDisplay.value = '';
+            } else {
+                DOM.ledgerModalTray.classList.remove('visible');
+                DOM.ledgerModalForm.reset();
+                clearLiveSearchState();
+                evaluateAllClearButtonVisualStates();
+            }
+        }
+
+        function toggleReportsModalDisplayState(shouldShow) {
+            if(shouldShow) {
+                DOM.reportsModalTray.classList.add('visible');
+                const workspaceMonthValue = DOM.monthSelector.value;
+                if(workspaceMonthValue) {
+                    const parts = workspaceMonthValue.split('-');
+                    DOM.rptYearSelect.value = parts[0];
+                    DOM.rptMonthSelect.value = parts[1];
+                }
+                synchronizeReportParameterFormViewState();
+                DOM.rptCanvas.style.display = 'none';
+            } else {
+                DOM.reportsModalTray.classList.remove('visible');
+            }
+        }
+
+        function synchronizeReportParameterFormViewState() {
+            DOM.rptMonthWrapper.style.display = DOM.rptScaleSelect.value === 'yearly' ? 'none' : 'block';
+        }
+
+        function clearLiveSearchState() {
+            DOM.searchLineInput.value = '';
+            DOM.boundCatDisplay.value = '';
+            evaluateInputFieldContentState('search-line-item', 'btn-clear-search');
+            closeAutocompleteSuggestionsTray();
+        }
+
+        function clearModalAutocompletes() {
+            DOM.modalLineTray.textContent = ''; DOM.modalLineTray.style.display = 'none';
+            DOM.modalCatTray.textContent = ''; DOM.modalCatTray.style.display = 'none';
+        }
+
+        function globallyCloseActiveSuggestionTrays(event) {
+            if (event.target.classList.contains('prevent-global-dismiss')) return;
+            closeAutocompleteSuggestionsTray();
+            clearModalAutocompletes();
+        }
+
+        function getActiveBindingPool(typeValue) {
+            if(typeValue === 'income') return customIncomeRelations;
+            if(typeValue === 'expense') return customExpenseRelations;
+            return customSavingsRelations;
+        }
+
+        function commitNewModalMappingStructure(e) {
+            e.preventDefault();
+            const targetType = DOM.modalTypeSelect.value;
+            const targetItemText = DOM.modalLineInput.value.trim();
+            const targetCategoryText = DOM.modalCatInput.value.trim();
+
+            if(!targetItemText || !targetCategoryText) return;
+            const bindingPool = getActiveBindingPool(targetType);
+            
+            if (bindingPool.some(b => b.item.toLowerCase() === targetItemText.toLowerCase())) {
+                alert("Mapping rule already initialized.");
+                return;
+            }
+
+            bindingPool.push({ item: targetItemText, cat: targetCategoryText });
+            persistDatabaseToDisk();
+            
+            toggleModalDisplayState(false);
+            toggleLedgerModalDisplayState(true);
+            
+            document.getElementById(`r-${targetType.substring(0,3)}`).checked = true;
+            DOM.searchLineInput.value = targetItemText;
+            DOM.boundCatDisplay.value = targetCategoryText;
+            evaluateAllClearButtonVisualStates();
+        }
+
+        const cachedLiveSearchSuggestions = debounce(function(queryValue) {
+            const activeTypeSelection = document.querySelector('input[name="entry_type"]:checked').value;
+            const pool = getActiveBindingPool(activeTypeSelection);
+            const normalizedQuery = queryValue.toLowerCase().trim();
+            const filteredNodes = !normalizedQuery ? pool : pool.filter(b => b.item.toLowerCase().includes(normalizedQuery));
+
+            if (filteredNodes.length === 0) {
+                DOM.liveTray.textContent = ''; DOM.liveTray.style.display = 'none'; return;
+            }
+
+            const frag = document.createDocumentFragment();
+            filteredNodes.forEach(matchNode => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'po-suggest-item';
+                itemDiv.innerHTML = `<span>${matchNode.item}</span><small style="color:var(--po-text-muted)">${matchNode.cat}</small>`;
+                itemDiv.onclick = (ev) => {
+                    ev.stopPropagation();
+                    DOM.searchLineInput.value = matchNode.item;
+                    DOM.boundCatDisplay.value = matchNode.cat;
+                    DOM.liveTray.style.display = 'none';
+                    evaluateInputFieldContentState('search-line-item', 'btn-clear-search');
+                };
+                frag.appendChild(itemDiv);
+            });
+            DOM.liveTray.textContent = ''; DOM.liveTray.appendChild(frag); DOM.liveTray.style.display = 'block';
+        }, 40);
+
+        function closeAutocompleteSuggestionsTray() {
+            DOM.liveTray.textContent = ''; DOM.liveTray.style.display = 'none';
+        }
+
+        const cachedModalLineSuggestions = debounce(function(queryValue) {
+            const targetType = DOM.modalTypeSelect.value;
+            const pool = getActiveBindingPool(targetType);
+            const normalizedQuery = queryValue.toLowerCase().trim();
+            const uniqueLines = !normalizedQuery ? Array.from(new Set(pool.map(b => b.item))) : Array.from(new Set(pool.map(b => b.item))).filter(item => item.toLowerCase().includes(normalizedQuery));
+
+            if(uniqueLines.length === 0) { DOM.modalLineTray.textContent = ''; DOM.modalLineTray.style.display = 'none'; return; }
+
+            const frag = document.createDocumentFragment();
+            uniqueLines.forEach(lineStr => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'po-suggest-item';
+                itemDiv.innerText = lineStr;
+                itemDiv.onclick = (ev) => {
+                    ev.stopPropagation();
+                    DOM.modalLineInput.value = lineStr;
+                    DOM.modalLineTray.style.display = 'none';
+                    evaluateInputFieldContentState('modal-input-line-item', 'btn-clear-m-line');
+                    const match = pool.find(b => b.item === lineStr);
+                    if(match) {
+                        DOM.modalCatInput.value = match.cat;
+                        evaluateInputFieldContentState('modal-input-category-group', 'btn-clear-m-cat');
+                    }
+                };
+                frag.appendChild(itemDiv);
+            });
+            DOM.modalLineTray.textContent = ''; DOM.modalLineTray.appendChild(frag); DOM.modalLineTray.style.display = 'block';
+        }, 40);
+
+        const cachedModalCategorySuggestions = debounce(function(queryValue) {
+            const targetType = DOM.modalTypeSelect.value;
+            const pool = getActiveBindingPool(targetType);
+            const normalizedQuery = queryValue.toLowerCase().trim();
+            const uniqueCats = !normalizedQuery ? Array.from(new Set(pool.map(b => b.cat))) : Array.from(new Set(pool.map(b => b.cat))).filter(cat => cat.toLowerCase().includes(normalizedQuery));
+
+            if(uniqueCats.length === 0) { DOM.modalCatTray.textContent = ''; DOM.modalCatTray.style.display = 'none'; return; }
+
+            const frag = document.createDocumentFragment();
+            uniqueCats.forEach(catStr => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'po-suggest-item';
+                itemDiv.innerText = catStr;
+                itemDiv.onclick = (ev) => {
+                    ev.stopPropagation();
+                    DOM.modalCatInput.value = catStr;
+                    DOM.modalCatTray.style.display = 'none';
+                    evaluateInputFieldContentState('modal-input-category-group', 'btn-clear-m-cat');
+                };
+                frag.appendChild(itemDiv);
+            });
+            DOM.modalCatTray.textContent = ''; DOM.modalCatTray.appendChild(frag); DOM.modalCatTray.style.display = 'block';
+        }, 40);
+
+        function commitNewFormStatement(e) {
+            e.preventDefault();
+            const typeStr = document.querySelector('input[name="entry_type"]:checked').value;
+            const labelStr = DOM.searchLineInput.value.trim();
+            let catStr = DOM.boundCatDisplay.value.trim();
+            const amountVal = parseFloat(DOM.fieldAmount.value);
+            const dateStr = DOM.fieldDate.value;
+
+            if(!labelStr || isNaN(amountVal) || !dateStr) return;
+
+            if(!catStr) {
+                const bindingPool = getActiveBindingPool(typeStr);
+                const matchedBinding = bindingPool.find(b => b.item.toLowerCase() === labelStr.toLowerCase());
+                catStr = matchedBinding ? matchedBinding.cat : "Unassigned Matrix Flow";
+                if(!matchedBinding) bindingPool.push({ item: labelStr, cat: catStr });
+            }
+
+            const calculatedMonth = dateStr.substring(0, 7);
+
+            if(globalEditTargetRowId !== null) {
+                const index = storageTransactionsDb.findIndex(tx => tx.id === globalEditTargetRowId);
+                if(index !== -1) {
+                    storageTransactionsDb[index] = { id: globalEditTargetRowId, type: typeStr, item: labelStr, cat: catStr, amount: amountVal, date: dateStr, recordMonth: calculatedMonth };
+                }
+                globalEditTargetRowId = null;
+            } else {
+                storageTransactionsDb.push({
+                    id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                    type: typeStr, item: labelStr, cat: catStr, amount: amountVal, date: dateStr, recordMonth: calculatedMonth
+                });
+            }
+            persistDatabaseToDisk();
+            toggleLedgerModalDisplayState(false);
+        }
+
+        function triggerRowEditTargetMode(uuid) {
+            const targetTx = storageTransactionsDb.find(tx => tx.id === uuid);
+            if(!targetTx) return;
+
+            globalEditTargetRowId = uuid;
+            toggleLedgerModalDisplayState(true);
+
+            document.getElementById(`r-${targetTx.type.substring(0,3)}`).checked = true;
+            DOM.searchLineInput.value = targetTx.item;
+            DOM.boundCatDisplay.value = targetTx.cat;
+            DOM.fieldAmount.value = targetTx.amount;
+            DOM.fieldDate.value = targetTx.date;
+
+            evaluateAllClearButtonVisualStates();
+        }
+
+        function triggerRowPurgeOperation(uuid) {
+            if(confirm("Confirm structural deletion of row statement?")) {
+                storageTransactionsDb = storageTransactionsDb.filter(tx => tx.id !== uuid);
+                persistDatabaseToDisk();
+            }
+        }
+
+        function switchWorkspaceMonthContext() {
+            compileUserInterfaceMetrics();
+        }
+
+        function executePreviousMonthRollover() {
+            const activePeriodStr = DOM.monthSelector.value;
+            if(!activePeriodStr) return;
+
+            const parts = activePeriodStr.split('-');
+            let year = parseInt(parts[0], 10);
+            let month = parseInt(parts[1], 10) - 1;
+            if(month === 0) { month = 12; year -= 1; }
+            const priorPeriodStr = `${year}-${String(month).padStart(2, '0')}`;
+
+            const templateRecords = storageTransactionsDb.filter(tx => tx.recordMonth === priorPeriodStr);
+            if(templateRecords.length === 0) {
+                alert("No prior historic templates found.");
+                return;
+            }
+
+            const appendBatch = [];
+            const uniqueSignature = Date.now();
+            templateRecords.forEach((tpl, idx) => {
+                appendBatch.push({
+                    id: 'tx_' + uniqueSignature + '_' + idx,
+                    type: tpl.type, item: tpl.item, cat: tpl.cat, amount: tpl.amount, date: `${activePeriodStr}-${tpl.date.split('-')[2]}`, recordMonth: activePeriodStr
+                });
+            });
+
+            storageTransactionsDb.push(...appendBatch);
+            persistDatabaseToDisk();
+        }
+
+        function exportDataToCSV() {
+            if(storageTransactionsDb.length === 0) { alert("Matrix stream empty."); return; }
+            let contents = "Date,Line Item,Category,Type,Amount\r\n";
+            storageTransactionsDb.forEach(tx => {
+                contents += `${tx.date},"${tx.item.replace(/"/g, '""')}","${tx.cat.replace(/"/g, '""')}",${tx.type},${tx.amount}\r\n`;
+            });
+            const blob = new Blob([contents], { type: 'text/csv;charset=utf-8;' });
+            const anchor = document.createElement('a');
+            anchor.href = URL.createObjectURL(blob);
+            anchor.setAttribute('download', `FEM_Data_${DOM.monthSelector.value}.csv`);
+            document.body.appendChild(anchor); anchor.click(); document.body.removeChild(anchor);
+        }
+
+        function importDataViaCSV(event) {
+            const fileRef = event.target.files[0];
+            if(!fileRef) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const rows = e.target.result.split(/\r?\n/);
+                if(rows.length <= 1) return;
+
+                let incomingCount = 0;
+                const batch = [];
+                const stamp = Date.now();
+                for(let i = 1; i < rows.length; i++) {
+                    const rowText = rows[i].trim();
+                    if(!rowText) continue;
+
+                    const tokens = rowText.split(',');
+                    if(tokens.length < 5) continue;
+
+                    let cellDate = tokens[0].trim();
+                    let cellItem = tokens[1].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+                    let cellCat = tokens[2].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+                    let cellType = tokens[3].trim().toLowerCase();
+                    let cellAmount = parseFloat(tokens[4].trim().replace(/[^0-9.-]/g, ''));
+
+                    if(!cellDate || !cellItem || isNaN(cellAmount)) continue;
+                    if(cellType !== 'income' && cellType !== 'expense' && cellType !== 'savings') cellType = 'expense';
+
+                    batch.push({
+                        id: 'tx_' + stamp + '_' + i,
+                        type: cellType, item: cellItem, cat: cellCat || "Imported Matrix", amount: cellAmount, date: cellDate, recordMonth: cellDate.substring(0, 7)
+                    });
+                    incomingCount++;
+                }
+
+                if(incomingCount > 0) {
+                    storageTransactionsDb.push(...batch);
+                    persistDatabaseToDisk();
+                    alert(`Imported ${incomingCount} items successfully.`);
+                }
+                DOM.csvGhost.value = '';
+            };
+            reader.readAsText(fileRef);
+        }
+
+        function executeFinancialHTMLReportCompilation(e) {
+            e.preventDefault();
+            const rptType = DOM.rptTypeSelect.value;
+            const rptScale = DOM.rptScaleSelect.value;
+            const targetYear = DOM.rptYearSelect.value;
+            const targetMonth = DOM.rptMonthSelect.value;
+
+            const isMonthly = rptScale === 'monthly';
+            const targetMatcher = isMonthly ? `${targetYear}-${targetMonth}` : targetYear;
+            
+            const filteredPool = storageTransactionsDb.filter(tx => 
+                tx.recordMonth && (isMonthly ? tx.recordMonth === targetMatcher : tx.recordMonth.startsWith(targetMatcher))
+            );
+
+            DOM.rptCanvas.style.display = 'block';
+            if(filteredPool.length === 0) {
+                DOM.rptCanvas.innerHTML = `<div class="po-empty" style="padding:20px;">No matching records found.</div>`; return;
+            }
+
+            let html = `<div class="po-rpt-box"><table class="po-rpt-table">`;
+
+            if(rptType === 'line-item') {
+                html += `<thead><tr><th>Line Item</th><th>Category</th><th>Type</th><th style="text-align:right;">Amount</th></tr></thead><tbody>`;
+                const matrixGroupMap = {};
+                filteredPool.forEach(tx => {
+                    const signatureKey = `${tx.item}__${tx.type}__${tx.cat}`;
+                    if(!matrixGroupMap[signatureKey]) {
+                        matrixGroupMap[signatureKey] = { itemName: tx.item, type: tx.type, category: tx.cat, totalVolume: 0, occurrences: 0 };
+                    }
+                    matrixGroupMap[signatureKey].totalVolume += tx.amount;
+                    matrixGroupMap[signatureKey].occurrences += 1;
+                });
+
+                let grandTotalSurplusNet = 0;
+                Object.keys(matrixGroupMap).sort().forEach(key => {
+                    const aggregatedRow = matrixGroupMap[key];
+                    grandTotalSurplusNet += (aggregatedRow.totalVolume * (aggregatedRow.type === 'income' ? 1 : -1));
+                    html += `<tr>
+                        <td><strong>${aggregatedRow.itemName}</strong><br><small style="color:var(--po-text-gray)">Consolidated Records Count: ${aggregatedRow.occurrences}</small></td>
+                        <td>${aggregatedRow.category}</td>
+                        <td><span class="po-badge ${aggregatedRow.type === 'income' ? 'badge-success' : 'badge-danger'}">${aggregatedRow.type}</span></td>
+                        <td style="text-align:right; font-weight:700;">$${aggregatedRow.totalVolume.toFixed(2)}</td>
+                    </tr>`;
+                });
+                html += `<tr class="po-rpt-tot"><td colspan="3">Aggregated Net Timeline Surplus</td><td style="text-align:right; color:${grandTotalSurplusNet >= 0 ? 'var(--po-success)' : 'var(--po-danger)'}">$${grandTotalSurplusNet.toFixed(2)}</td></tr>`;
+            
+            } else if(rptType === 'group-wise') {
+                html += `<thead><tr><th>Category Pipeline</th><th>Type</th><th style="text-align:right;">Volume</th></tr></thead><tbody>`;
+                const map = {};
+                filteredPool.forEach(tx => { const k = `${tx.cat}__${tx.type}`; map[k] = (map[k] || 0) + tx.amount; });
+                Object.keys(map).sort().forEach(k => {
+                    const [cName, cType] = k.split('__');
+                    html += `<tr><td><strong>${cName}</strong></td><td><span class="po-badge ${cType==='income'?'badge-success':'badge-danger'}">${cType}</span></td><td style="text-align:right; font-weight:700;">$${map[k].toFixed(2)}</td></tr>`;
+                });
+            } else if(rptType === 'p-and-l') {
+                let inc = 0, exp = 0, sav = 0;
+                filteredPool.forEach(tx => { if(tx.type==='income') inc+=tx.amount; else if(tx.type==='expense') exp+=tx.amount; else sav+=tx.amount; });
+                html += `
+                    <tr class="po-rpt-sec"><td colspan="2">1. Operating Revenues</td></tr>
+                    <tr><td>Gross Capital Inflows</td><td style="text-align:right; color:var(--po-success); font-weight:700;">$${inc.toFixed(2)}</td></tr>
+                    <tr class="po-rpt-sec"><td colspan="2">2. Operating Expenses</td></tr>
+                    <tr><td>Structural Spending Discharges</td><td style="text-align:right; color:var(--po-danger); font-weight:700;">$${exp.toFixed(2)}</td></tr>
+                    <tr class="po-rpt-sec"><td colspan="2">3. Capital Reserve Provisions</td></tr>
+                    <tr><td>Sinking Reserves Adjustments</td><td style="text-align:right; color:var(--po-primary); font-weight:700;">$${sav.toFixed(2)}</td></tr>
+                    <tr class="po-rpt-tot"><td>Net Retained Operational Surplus</td><td style="text-align:right; font-weight:700;">$${(inc - exp - sav).toFixed(2)}</td></tr>`;
+            }
+            html += `</tbody></table></div>`;
+            DOM.rptCanvas.innerHTML = html;
+        }
+
+        function compileUserInterfaceMetrics() {
+            const activePeriodStr = DOM.monthSelector.value;
+            const filteredArray = [];
+            let incSum = 0, expSum = 0, savSum = 0, hasPriorRecords = false;
+
+            storageTransactionsDb.forEach(tx => {
+                if (tx.recordMonth === activePeriodStr) {
+                    filteredArray.push(tx);
+                    if (tx.type === 'income') incSum += tx.amount;
+                    else if (tx.type === 'expense') expSum += tx.amount;
+                    else if (tx.type === 'savings') savSum += tx.amount;
+                } else if (tx.recordMonth && tx.recordMonth < activePeriodStr) {
+                    hasPriorRecords = true;
+                }
+            });
+
+            DOM.ledgerTarget.textContent = '';
+            if (filteredArray.length === 0) {
+                DOM.emptyNotice.style.display = 'block';
+                DOM.prevImportBox.style.display = hasPriorRecords ? 'block' : 'none';
+            } else {
+                DOM.emptyNotice.style.display = 'none';
+                const frag = document.createDocumentFragment();
+                filteredArray.sort((a,b) => b.date.localeCompare(a.date));
+
+                filteredArray.forEach(tx => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td data-label="Index Date" style="font-weight:600; color:var(--po-text-gray);">${parseAndFormatDateString(tx.date)}</td>
+                        <td data-label="Line Matrix Target Item" style="font-weight:700; color:var(--po-text-dark);">${tx.item}</td>
+                        <td data-label="Group Pipeline"><span>${tx.cat}</span></td>
+                        <td data-label="Flow Type"><span class="po-badge ${tx.type==='income'?'badge-success':tx.type==='expense'?'badge-danger':'badge-primary'}">${tx.type}</span></td>
+                        <td data-label="Capital Volume" style="text-align:right; font-weight:700; color:${tx.type==='expense'?'var(--po-danger)':'var(--po-text-dark)'}">BDT ${tx.amount.toFixed(2)}</td>
+                        <td data-label="Actions" style="text-align:right; padding-right: 25px;">
+                            <div style="display:flex; gap:6px; justify-content:flex-end; flex-wrap: wrap;">
+                                <button type="button" class="btn-po" style="padding:4px 10px; font-size:11px;" onclick="triggerRowEditTargetMode('${tx.id}')">Edit</button>
+                                <button type="button" class="btn-po btn-po-danger-variant" style="padding:4px 10px; font-size:11px;" onclick="triggerRowPurgeOperation('${tx.id}')">Delete</button>
+                            </div>
+                        </td>`;
+                    frag.appendChild(tr);
+                });
+                DOM.ledgerTarget.appendChild(frag);
+            }
+
+            DOM.statIncome.innerText = `BDT ${incSum.toFixed(2)}`;
+            DOM.statExpenses.innerText = `BDT ${expSum.toFixed(2)}`;
+            DOM.statSavings.innerText = `BDT ${savSum.toFixed(2)}`;
+            const netSurplus = incSum - expSum - savSum;
+            DOM.statBalance.innerText = `BDT ${netSurplus.toFixed(2)}`;
+            DOM.statBalance.style.color = netSurplus < 0 ? 'var(--po-danger)' : 'var(--po-text-dark)';
+        }
+
+        window.onload = function() {
+            initializeDefaultTimeframe();
+            compileUserInterfaceMetrics();
+            evaluateAllClearButtonVisualStates();
+        };
+    </script>
+</body>
+</html>

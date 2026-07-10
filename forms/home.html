@@ -3,347 +3,714 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Traffic Dashboard</title>
+    <title>Metsis Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* Base Styles & Porto Light Theme Colors */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-main: #f7f7f7;
+            --surface-card: #ffffff;
+            --border-color: #e3e3e3;
+            --border-focus: #0088cc;
+            --text-main: #212529;
+            --text-muted: #777777;
+            --accent-primary: #0088cc;
+            --accent-hover: #006699;
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius-main: 4px;
+            --player-bg: #0b0b0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #f4f6f9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            color: #33353f;
-            padding: 16px;
-        }
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
+            font-family: 'Open Sans', Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: clamp(15px, 4vw, 40px) clamp(10px, 3vw, 20px);
             display: flex;
             flex-direction: column;
-            gap: 24px;
-        }
-        
-        /* Grid Layouts */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Card Elements */
-        .card {
-            background: #ffffff;
-            border: 1px solid #eef1f5;
-            border-radius: 4px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .card-inner {
-            display: flex;
-            flex-direction: column;
-        }
-        .card-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .card-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-top: 4px;
-        }
-        .card-sub {
-            font-size: 12px;
-            margin-top: 4px;
-            color: #9ca3af;
-        }
-        
-        /* Icon Wrapper & Colors */
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .bg-blue { background-color: #eff6ff; color: #3b82f6; }
-        .bg-indigo { background-color: #e0e7ff; color: #4f46e5; }
-        .bg-orange { background-color: #fff7ed; color: #ea580c; }
-
-        /* Component Blocks */
-        .block-box {
-            background: #ffffff;
-            border: 1px solid #eef1f5;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        .block-header {
-            padding: 20px;
-            border-bottom: 1px solid #f3f4f6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .block-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #374151;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive SVG Line Graph Framework */
-        .chart-container { 
-            position: relative; 
-            padding-top: 16px; 
+        .app-container {
             width: 100%;
-            aspect-ratio: 1000 / 300;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(20px, 4vw, 35px);
         }
-        .chart-svg {
+
+        /* Responsive Utility Header */
+        .top-utility-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface-card);
+            padding: 20px 30px;
+            border-radius: var(--radius-main);
+            border-bottom: 3px solid var(--accent-primary);
+            box-shadow: var(--shadow-sm);
+            gap: 15px;
+        }
+
+        .brand-header h1 {
+            font-size: clamp(1.4rem, 4vw, 1.75rem);
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-header h1 span {
+            color: var(--accent-primary);
+            font-weight: 800;
+        }
+
+        .brand-header p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* Search System Setup */
+        .search-system-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-container {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            display: flex;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--border-focus);
+            box-shadow: var(--shadow-md);
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #b0b0b0;
+        }
+
+        .search-btn {
+            padding: 0 clamp(15px, 3vw, 30px);
+            background: var(--accent-primary);
+            color: #ffffff;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover, .search-btn:focus-visible {
+            background: var(--accent-hover);
+        }
+
+        /* Clean Dropdown Suggestions */
+        .suggestions-panel {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            z-index: 110;
+            box-shadow: var(--shadow-md);
+        }
+
+        .suggestions-panel.visible {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+            transition: background 0.15s ease;
+        }
+
+        .suggestion-item:hover, .suggestion-item:focus {
+            background-color: #f9f9f9;
+            color: var(--accent-primary);
+        }
+
+        .suggestion-item .history-icon {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        /* Video Player Stage */
+        .player-section {
+            display: none;
+            width: 100%;
+            background: var(--surface-card);
+            border-radius: var(--radius-main);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            contain: layouts;
+        }
+
+        .player-section.active {
+            display: block;
+        }
+
+        .player-stage-bg {
+            background: var(--player-bg);
+            line-height: 0;
+        }
+
+        .player-aspect-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+        }
+
+        .player-aspect-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 0;
+        }
+
+        /* Controls Area */
+        .player-controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 25px);
+            background: #fafafa;
+            border-top: 1px solid var(--border-color);
+            gap: 10px;
+        }
+
+        .control-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 20px;
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .control-nav-btn:hover:not(:disabled), .control-nav-btn:focus-visible:not(:disabled) {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .control-nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .stream-indicator-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        /* Performance Optimized Results Matrix */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(clamp(240px, 22vw, 280px), 1fr));
+            gap: clamp(15px, 3vw, 25px);
+            width: 100%;
+        }
+
+        /* Premium exhibition Cards */
+        .video-card {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease, border-color 0.2s ease;
+            content-visibility: auto;
+            contain-intrinsic-size: 320px;
+        }
+
+        .video-card:hover, .video-card:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+            outline: none;
+        }
+
+        .video-card.is-streaming {
+            border: 2px solid var(--accent-primary);
+            background: #f4fafd;
+        }
+
+        .thumb-frame {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            position: relative;
+            background-color: #eee;
+            margin-bottom: 12px;
+            border-radius: 2px;
+        }
+
+        .video-card img {
             width: 100%;
             height: 100%;
-            overflow: visible;
-        }
-        .chart-line-path {
-            fill: none;
-            stroke: #3b82f6;
-            stroke-width: 3.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: d 0.3s ease;
-        }
-        .chart-area-path {
-            fill: url(#gradient-accent);
-            transition: d 0.3s ease;
-        }
-        .live-glow-dot {
-            fill: #3b82f6;
-            stroke: #ffffff;
-            stroke-width: 3;
-            transition: cx 0.3s ease, cy 0.3s ease;
-        }
-        
-        /* Inline SVG text styles */
-        .svg-metric-text {
-            font-size: 12px;
-            font-weight: bold;
-            fill: #1f2937;
-            transition: x 0.3s ease, y 0.3s ease;
-        }
-        .svg-label-hint {
-            font-size: 10px;
-            fill: #9ca3af;
-            font-weight: normal;
+            object-fit: cover;
         }
 
-        .chart-labels { 
+        .type-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 3px 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 2px;
+            background-color: rgba(33, 37, 49, 0.85);
+            color: #ffffff;
+            z-index: 2;
+        }
+
+        .playlist-badge-style {
+            background-color: var(--accent-primary) !important;
+        }
+
+        .card-details {
             display: flex;
-            justify-content: space-between; 
-            font-size: 11px; 
-            color: #9ca3af; 
-            padding: 12px 4px 0 4px; 
-            border-top: 1px solid #f3f4f6;
-            margin-top: 8px;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
         }
 
-        /* Pulse Dot Animation for Live Data */
-        .pulse-dot { display: inline-block; width: 8px; height: 8px; background-color: #3b82f6; border-radius: 50%; margin-right: 4px; position: relative; }
-        .pulse-dot::after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: inherit; border-radius: 50%; animation: pulse 1.5s infinite ease-in-out; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+        .video-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
 
-        /* Media Query Responsive Tweaks */
-        @media (min-width: 768px) {
-            body { padding: 24px; }
-            .grid-3 { gap: 24px; }
+        .channel-badge {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: auto;
+            padding-top: 6px;
+            border-top: 1px dashed #f1f1f1;
+        }
+
+        /* Footer Structural Framework */
+        .pagination-footer {
+            display: none;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .pill-load-btn {
+            padding: 12px 35px;
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.2s ease;
+        }
+
+        .pill-load-btn:hover, .pill-load-btn:focus-visible {
+            background-color: var(--accent-hover);
+        }
+
+        .loading-shimmer {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .top-utility-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .player-controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .control-nav-btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-
-        <div class="grid-3">
-            
-            <div class="card">
-                <div class="card-inner">
-                    <span class="card-label">Overall Visitors</span>
-                    <span class="card-value" id="real-overall-visitors">0</span>
-                    <span class="card-sub">Total views on this machine</span>
-                </div>
-                <div class="icon-box bg-blue">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                </div>
+    <div class="app-container">
+        <header class="top-utility-bar">
+            <div class="brand-header">
+                <h1>Metsis <span>Studio</span></h1>
+                <p>Metsis Optimization Engine</p>
             </div>
+        </header>
 
-            <div class="card">
-                <div class="card-inner">
-                    <span class="card-label">Unique Users</span>
-                    <span class="card-value" id="real-unique-users">0</span>
-                    <span class="card-sub">Identified by local token</span>
+        <div class="search-system-wrapper" id="searchSystemWrapper">
+            <div class="search-container">
+                <div class="input-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search videos or playlists..." autocomplete="off" aria-label="Search Input Grid">
                 </div>
-                <div class="icon-box bg-indigo">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.915 13.915 0 00-3.143-8.846m5.808 5.808a13.928 13.928 0 011.69 7.377m-1.69-7.377C13.315 4.86 14.748 2 17 2c2.761 0 5 4.03 5 9 0 4.195-1.57 7.735-3.69 8.774M6 6h.01M6 10h.01M6 14h.01M12 16h.01M12 20h.01M12 4h.01M18 8h.01M18 12h.01"></path></svg>
-                </div>
+                <button type="button" class="search-btn" id="searchBtn">Search</button>
             </div>
-
-            <div class="card">
-                <div class="card-inner">
-                    <span class="card-label">Visitors Today</span>
-                    <span class="card-value" id="real-visitors-today">0</span>
-                    <span class="card-sub"><span class="pulse-dot"></span> Active session views</span>
-                </div>
-                <div class="icon-box bg-orange">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-            </div>
+            <div class="suggestions-panel" id="suggestionsPanel"></div>
         </div>
 
-        <div class="block-box">
-            <div class="block-header">
-                <span class="block-title">Real-Time Activity & Historical Traffic Path</span>
-            </div>
-            <div style="padding: clamp(12px, 3vw, 24px);">
-                <div class="chart-container">
-                    <svg class="chart-svg" id="traffic-svg" viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="gradient-accent" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2"/>
-                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
-                            </linearGradient>
-                        </defs>
-                        
-                        <line x1="0" y1="0" x2="1000" y2="0" stroke="#f3f4f6" stroke-width="1" />
-                        <line x1="0" y1="75" x2="1000" y2="75" stroke="#f3f4f6" stroke-width="1" />
-                        <line x1="0" y1="150" x2="1000" y2="150" stroke="#f3f4f6" stroke-width="1" />
-                        <line x1="0" y1="225" x2="1000" y2="225" stroke="#f3f4f6" stroke-width="1" />
-                        <line x1="0" y1="300" x2="1000" y2="300" stroke="#e5e7eb" stroke-width="1.5" />
-
-                        <path class="chart-area-path" id="graph-area" d="M 0 300 L 1000 300 Z" />
-                        <path class="chart-line-path" id="graph-line" d="M 0 300 L 1000 300" />
-                        
-                        <text id="svg-live-today-text" class="svg-metric-text" x="0" y="280" text-anchor="middle">
-                            0 <tspan class="svg-label-hint">Today</tspan>
-                        </text>
-
-                        <text id="svg-total-visitors-text" class="svg-metric-text" x="990" y="25" text-anchor="end">
-                            0 <tspan class="svg-label-hint">Total overall</tspan>
-                        </text>
-
-                        <circle class="live-glow-dot" id="live-dot" cx="0" cy="300" r="6" />
-                    </svg>
-                </div>
-                <div class="chart-labels">
-                    <span>30 Days Ago (0 count baseline)</span>
-                    <span>15 Days Ago</span>
-                    <span style="color:#3b82f6; font-weight:700;">Live Position</span>
+        <section class="player-section" id="playerSection" aria-label="Media Playback Arena">
+            <div class="player-stage-bg">
+                <div class="player-aspect-wrapper">
+                    <iframe id="videoPlayer" src="" allowfullscreen 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
                 </div>
             </div>
-        </div>
+            <div class="player-controls-bar">
+                <button class="control-nav-btn" id="prevStreamBtn" disabled>Previous</button>
+                <span class="stream-indicator-text" id="streamIndicator">ENGINE IDLE</span>
+                <button class="control-nav-btn" id="nextStreamBtn" disabled>Next</button>
+            </div>
+        </section>
 
+        <main class="results-grid" id="resultsGrid"></main>
+
+        <footer class="pagination-footer" id="paginationContainer">
+            <button class="pill-load-btn" id="loadMoreBtn">Load More Content</button>
+        </footer>
     </div>
 
     <script>
-        const totalSampleNodes = 30;
-        const canvasWidth = 1000;
-        const canvasHeight = 300;
+        const API_KEY = "AIzaSyBqnF7lJJ-AHO2wsYOe2jvjloKNR5Qw8u0";
+        const HISTORY_STORAGE_KEY = "porto_studio_history_v1";
+        const maxResultsPerPage = 12;
+
+        let currentQuery = "";
+        let nextPageToken = "";
+        let loadedItemsCache = [];
+        let activeStreamIndex = -1;
+        let searchHistory = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+
+        // DOM elements cache
+        const searchInput = document.getElementById("searchInput");
+        const suggestionsPanel = document.getElementById("suggestionsPanel");
+        const resultsGrid = document.getElementById("resultsGrid");
+        const searchBtn = document.getElementById("searchBtn");
+        const loadMoreBtn = document.getElementById("loadMoreBtn");
+        const paginationContainer = document.getElementById("paginationContainer");
+        const playerSection = document.getElementById("playerSection");
+        const videoPlayer = document.getElementById("videoPlayer");
+        const prevStreamBtn = document.getElementById("prevStreamBtn");
+        const nextStreamBtn = document.getElementById("nextStreamBtn");
+        const streamIndicator = document.getElementById("streamIndicator");
+
+        // Native Performance Debouncer
+        function debounce(func, wait = 200) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // Setup Event Listeners
+        searchInput.addEventListener("input", debounce(handleHistoryDisplay, 150));
+        searchInput.addEventListener("focus", handleHistoryDisplay);
+        searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") performNewSearch(); });
+        searchBtn.addEventListener("click", performNewSearch);
+        loadMoreBtn.addEventListener("click", fetchContent);
+        prevStreamBtn.addEventListener("click", () => navigateToStream(-1));
+        nextStreamBtn.addEventListener("click", () => navigateToStream(1));
         
-        let overallVisitorsCount = 0;
-        let todayVisitorsCount = 0;
-
-        // Cache DOM elements globally for efficient resource calls
-        let elOverall, elUnique, elToday, elGraphLine, elGraphArea, elLiveDot, elLiveText, elTotalText;
-
-        function initAnalytics() {
-            // DOM Caching Initialization
-            elOverall = document.getElementById('real-overall-visitors');
-            elUnique = document.getElementById('real-unique-users');
-            elToday = document.getElementById('real-visitors-today');
-            elGraphLine = document.getElementById('graph-line');
-            elGraphArea = document.getElementById('graph-area');
-            elLiveDot = document.getElementById('live-dot');
-            elLiveText = document.getElementById('svg-live-today-text');
-            elTotalText = document.getElementById('svg-total-visitors-text');
-
-            // Process State Tracking
-            overallVisitorsCount = parseInt(localStorage.getItem('analytics_overall') || '0') + 1;
-            localStorage.setItem('analytics_overall', overallVisitorsCount);
-            elOverall.textContent = overallVisitorsCount.toLocaleString();
-
-            let uniqueToken = localStorage.getItem('analytics_user_token');
-            let uniqueCount = parseInt(localStorage.getItem('analytics_unique_count') || '0');
-            if (!uniqueToken) {
-                uniqueToken = 'usr_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('analytics_user_token', uniqueToken);
-                uniqueCount += 1;
-                localStorage.setItem('analytics_unique_count', uniqueCount);
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest('#searchSystemWrapper')) {
+                suggestionsPanel.classList.remove("visible");
             }
-            elUnique.textContent = uniqueCount.toLocaleString();
+        });
 
-            let todayStr = new Date().toDateString();
-            let savedDate = localStorage.getItem('analytics_date');
-            todayVisitorsCount = parseInt(localStorage.getItem('analytics_today_count') || '0');
+        // Event delegation for grid interactions (Performance gains)
+        resultsGrid.addEventListener("click", (e) => {
+            const card = e.target.closest(".video-card");
+            if (!card) return;
+            const index = parseInt(card.dataset.index, 10);
+            const id = card.dataset.id;
+            const isPlaylist = card.dataset.isPlaylist === "true";
+            instantiateTargetStream(id, isPlaylist, index);
+        });
 
-            if (savedDate !== todayStr) {
-                localStorage.setItem('analytics_date', todayStr);
-                todayVisitorsCount = 1;
+        resultsGrid.addEventListener("keydown", (e) => {
+            if (e.key !== 'Enter') return;
+            const card = e.target.closest(".video-card");
+            if (!card) return;
+            const index = parseInt(card.dataset.index, 10);
+            const id = card.dataset.id;
+            const isPlaylist = card.dataset.isPlaylist === "true";
+            instantiateTargetStream(id, isPlaylist, index);
+        });
+
+        // History Suggestions Panel Interaction Handler
+        suggestionsPanel.addEventListener("click", (e) => {
+            const item = e.target.closest(".suggestion-item");
+            if (!item) return;
+            searchInput.value = item.dataset.query;
+            suggestionsPanel.classList.remove("visible");
+            performNewSearch();
+        });
+
+        function handleHistoryDisplay() {
+            const value = searchInput.value.trim().toLowerCase();
+            suggestionsPanel.innerHTML = "";
+
+            const matches = searchHistory.filter(item => 
+                item.toLowerCase().includes(value)
+            ).reverse().slice(0, 5);
+
+            if (matches.length > 0) {
+                const fragment = document.createDocumentFragment();
+                matches.forEach(item => {
+                    const row = document.createElement("div");
+                    row.className = "suggestion-item";
+                    row.dataset.query = item;
+                    row.tabIndex = 0;
+                    row.innerHTML = `<span>${escapeHtml(item)}</span> <span class="history-icon">History</span>`;
+                    fragment.appendChild(row);
+                });
+                suggestionsPanel.appendChild(fragment);
+                suggestionsPanel.classList.add("visible");
             } else {
-                todayVisitorsCount += 1;
+                suggestionsPanel.classList.remove("visible");
             }
-            localStorage.setItem('analytics_today_count', todayVisitorsCount);
-            elToday.textContent = todayVisitorsCount.toLocaleString();
-
-            renderTrueZeroGraph();
         }
 
-        function renderTrueZeroGraph() {
-            const stepX = canvasWidth / (totalSampleNodes - 1);
-            const maxPeak = Math.max(todayVisitorsCount, 10);
-            const yCeiling = maxPeak * 1.3;
+        function saveQueryToHistory(query) {
+            if (!query) return;
+            searchHistory = searchHistory.filter(item => item.toLowerCase() !== query.toLowerCase());
+            searchHistory.push(query);
+            if (searchHistory.length > 10) searchHistory.shift(); 
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(searchHistory));
+        }
 
-            let linePath = "";
-            let areaPath = `M 0 ${canvasHeight} `;
+        function performNewSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
 
-            for (let i = 0; i < totalSampleNodes; i++) {
-                const currentX = i * stepX;
-                let currentY = canvasHeight;
-
-                if (i === totalSampleNodes - 1) {
-                    currentY = canvasHeight - ((todayVisitorsCount / yCeiling) * canvasHeight);
-                    currentY = Math.max(20, Math.min(canvasHeight - 10, currentY));
-
-                    elLiveDot.setAttribute('cx', currentX);
-                    elLiveDot.setAttribute('cy', currentY);
-
-                    elLiveText.setAttribute('x', currentX - 35);
-                    elLiveText.setAttribute('y', currentY - 12);
-                    elLiveText.innerHTML = `${todayVisitorsCount} <tspan class="svg-label-hint">Today</tspan>`;
-                }
-
-                if (i === 0) {
-                    linePath += `M ${currentX} ${currentY} `;
-                } else {
-                    linePath += `L ${currentX} ${currentY} `;
-                }
-                areaPath += `L ${currentX} ${currentY} `;
-            }
-
-            areaPath += `L ${canvasWidth} ${canvasHeight} Z`;
+            currentQuery = query;
+            nextPageToken = ""; 
+            loadedItemsCache = [];
+            activeStreamIndex = -1;
             
-            elGraphLine.setAttribute('d', linePath);
-            elGraphArea.setAttribute('d', areaPath);
-            elTotalText.innerHTML = `${overallVisitorsCount} <tspan class="svg-label-hint">Total Overall</tspan>`;
+            resultsGrid.innerHTML = "";
+            paginationContainer.style.display = "none"; 
+            playerSection.classList.remove("active");
+            videoPlayer.src = "";
+            suggestionsPanel.classList.remove("visible");
+
+            saveQueryToHistory(query);
+            fetchContent();
         }
 
-        // Fast load injection alternative to window.onload
-        document.addEventListener('DOMContentLoaded', initAnalytics);
-    </script>
+        async function fetchContent() {
+            if (!currentQuery) return;
+            toggleSearchLoadingState(true);
 
+            let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResultsPerPage}&q=${encodeURIComponent(currentQuery)}&type=video,playlist&key=${API_KEY}`;
+            if (nextPageToken) url += `&pageToken=${nextPageToken}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                toggleSearchLoadingState(false);
+
+                if (data.error) {
+                    alert(`API Error: ${data.error.message}`);
+                    return;
+                }
+
+                nextPageToken = data.nextPageToken || "";
+                if (data.items && data.items.length > 0) {
+                    loadedItemsCache = loadedItemsCache.concat(data.items);
+                }
+
+                renderGridElements(data.items);
+                updateControlBarState();
+                paginationContainer.style.display = nextPageToken ? "flex" : "none";
+
+            } catch (error) {
+                toggleSearchLoadingState(false);
+                console.error("Fetch failure:", error);
+            }
+        }
+
+        function toggleSearchLoadingState(isLoading) {
+            searchBtn.disabled = isLoading;
+            loadMoreBtn.disabled = isLoading;
+            loadMoreBtn.innerText = isLoading ? "LOADING..." : "Load More Content";
+            resultsGrid.classList.toggle('loading-shimmer', isLoading);
+        }
+
+        function renderGridElements(items) {
+            const baseStartIndex = loadedItemsCache.length - items.length;
+            if ((!items || items.length === 0) && !nextPageToken) {
+                resultsGrid.innerHTML = `<div style="text-align:center; color:var(--text-muted); grid-column: 1/-1; padding: 50px 20px;">No matches found for requested parameters.</div>`;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            items.forEach((item, index) => {
+                const globalIndex = baseStartIndex + index;
+                const isPlaylist = item.id.kind === "youtube#playlist";
+                const targetId = isPlaylist ? item.id.playlistId : item.id.videoId;
+                
+                const title = escapeHtml(item.snippet.title);
+                const thumbnail = escapeHtml(item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || '');
+                const channel = escapeHtml(item.snippet.channelTitle);
+
+                const card = document.createElement("article");
+                card.className = "video-card";
+                card.id = `video-card-${globalIndex}`;
+                card.tabIndex = 0;
+                card.setAttribute("aria-label", `Play stream: ${title}`);
+                
+                // Attach custom dataset attributes instead of creating individual closures
+                card.dataset.index = globalIndex;
+                card.dataset.id = targetId;
+                card.dataset.isPlaylist = isPlaylist;
+
+                const badgeClass = isPlaylist ? "type-badge playlist-badge-style" : "type-badge";
+
+                card.innerHTML = `
+                    <div class="thumb-frame">
+                        <span class="${badgeClass}">${isPlaylist ? 'PLAYLIST' : 'VIDEO'}</span>
+                        <img src="${thumbnail}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="card-details">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="channel-badge"><span>${channel}</span></div>
+                    </div>
+                `;
+                fragment.appendChild(card);
+            });
+
+            resultsGrid.appendChild(fragment);
+        }
+
+        function instantiateTargetStream(id, isPlaylist, itemIndex) {
+            activeStreamIndex = itemIndex;
+            const sourceUrl = isPlaylist 
+                ? `https://www.youtube-nocookie.com/embed/videoseries?list=${escapeHtml(id)}&autoplay=1`
+                : `https://www.youtube-nocookie.com/embed/${escapeHtml(id)}?autoplay=1&rel=0`;
+            
+            videoPlayer.src = sourceUrl;
+            playerSection.classList.add("active");
+
+            // Efficient target element matching
+            document.querySelectorAll(".video-card").forEach(card => {
+                const isCurrent = parseInt(card.dataset.index, 10) === itemIndex;
+                card.classList.toggle("is-streaming", isCurrent);
+                card.setAttribute("aria-current", isCurrent ? "true" : "false");
+            });
+
+            updateControlBarState();
+            playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function navigateToStream(offset) {
+            const newTargetIndex = activeStreamIndex + offset;
+            if (newTargetIndex < 0 || newTargetIndex >= loadedItemsCache.length) return;
+
+            const targetAsset = loadedItemsCache[newTargetIndex];
+            const isPlaylist = targetAsset.id.kind === "youtube#playlist";
+            const targetId = isPlaylist ? targetAsset.id.playlistId : targetAsset.id.videoId;
+
+            instantiateTargetStream(targetId, isPlaylist, newTargetIndex);
+        }
+
+        function updateControlBarState() {
+            if (activeStreamIndex === -1 || loadedItemsCache.length === 0) {
+                prevStreamBtn.disabled = true;
+                nextStreamBtn.disabled = true;
+                streamIndicator.innerText = "ENGINE IDLE";
+                return;
+            }
+
+            prevStreamBtn.disabled = (activeStreamIndex === 0);
+            nextStreamBtn.disabled = (activeStreamIndex === loadedItemsCache.length - 1);
+            streamIndicator.innerText = `STREAM ${activeStreamIndex + 1} OF ${loadedItemsCache.length}`;
+        }
+
+        function escapeHtml(str) {
+            if(!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
 </body>
 </html>

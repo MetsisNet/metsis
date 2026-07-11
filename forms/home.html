@@ -4,713 +4,709 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metsis Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     
     <style>
         :root {
-            --bg-main: #f7f7f7;
-            --surface-card: #ffffff;
-            --border-color: #e3e3e3;
-            --border-focus: #0088cc;
-            --text-main: #212529;
-            --text-muted: #777777;
-            --accent-primary: #0088cc;
-            --accent-hover: #006699;
-            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --radius-main: 4px;
-            --player-bg: #0b0b0b;
+            /* Premium Studio Light-Zinc Configuration */
+            --bs-font-sans-serif: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --bg-canvas: #f4f4f5;
+            --bg-card: #ffffff;
+            --bg-card-hover: #fafafa;
+            --border-glow: #e4e4e7;
+            --border-focus: #a1a1aa;
+            --text-main: #09090b;
+            --text-muted: #71717a;
+            --accent-brand: #18181b;
+            --accent-glow: rgba(24, 24, 27, 0.04);
+            --shimmer-gradient: linear-gradient(90deg, #ffffff 25%, #e4e4e7 50%, #ffffff 75%);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        
         body {
-            font-family: 'Open Sans', Arial, sans-serif;
-            background: var(--bg-main);
+            background-color: var(--bg-canvas);
             color: var(--text-main);
             min-height: 100vh;
-            padding: clamp(15px, 4vw, 40px) clamp(10px, 3vw, 20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             -webkit-font-smoothing: antialiased;
+            font-size: 0.95rem;
+            letter-spacing: -0.01em;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: clamp(20px, 4vw, 35px);
+        /* Global Header Bar */
+        .premium-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glow);
+            z-index: 1040;
         }
 
-        /* Responsive Utility Header */
-        .top-utility-bar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface-card);
-            padding: 20px 30px;
-            border-radius: var(--radius-main);
-            border-bottom: 3px solid var(--accent-primary);
-            box-shadow: var(--shadow-sm);
-            gap: 15px;
+        .brand-pill {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            padding: 4px 10px;
+            background: var(--accent-brand);
+            border: 1px solid var(--accent-brand);
+            border-radius: 6px;
         }
 
-        .brand-header h1 {
-            font-size: clamp(1.4rem, 4vw, 1.75rem);
-            font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: -0.02em;
+        /* High-Performance Search Deck */
+        .search-container-shell {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 2px;
+            transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: border-color, box-shadow;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        .brand-header h1 span {
-            color: var(--accent-primary);
-            font-weight: 800;
-        }
-
-        .brand-header p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 400;
-            margin-top: 2px;
-        }
-
-        /* Search System Setup */
-        .search-system-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .search-container {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-main);
-            display: flex;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .search-container:focus-within {
+        .search-container-shell:focus-within {
             border-color: var(--border-focus);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 0 0 1px var(--border-focus), 0 10px 30px -10px rgba(0, 0, 0, 0.05);
         }
 
-        .input-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
+        .form-input-minimal {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-main) !important;
+            font-weight: 500;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 15px 20px;
+        .form-input-minimal::placeholder {
+            color: #a1a1aa;
+        }
+
+        .form-input-minimal:focus {
+            box-shadow: none !important;
+        }
+
+        /* UI Action Elements */
+        .btn-minimal {
+            border-radius: 8px !important;
+            font-weight: 500;
+            font-size: 0.88rem;
+            transition: opacity 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
+        }
+
+        .btn-minimal:active {
+            transform: scale(0.97);
+        }
+
+        .btn-premium-solid {
+            background: var(--accent-brand);
+            border: none;
+            color: #ffffff;
+        }
+
+        .btn-premium-solid:hover:not(:disabled) {
+            background: #27272a;
+            color: #ffffff;
+        }
+
+        .btn-reset-field {
+            color: #a1a1aa;
             border: none;
             background: transparent;
+            transition: color 0.15s ease;
+        }
+
+        .btn-reset-field:hover {
             color: var(--text-main);
-            font-size: 0.95rem;
-            outline: none;
         }
 
-        .search-input::placeholder {
-            color: #b0b0b0;
-        }
-
-        .search-btn {
-            padding: 0 clamp(15px, 3vw, 30px);
-            background: var(--accent-primary);
-            color: #ffffff;
-            border: none;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .search-btn:hover, .search-btn:focus-visible {
-            background: var(--accent-hover);
-        }
-
-        /* Clean Dropdown Suggestions */
-        .suggestions-panel {
+        /* Suggestion Panel Dropdown */
+        .suggestions-dropdown {
             position: absolute;
-            top: calc(100% + 5px);
+            top: calc(100% + 8px);
             left: 0;
             right: 0;
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-main);
-            max-height: 250px;
-            overflow-y: auto;
+            z-index: 1060;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
             display: none;
-            z-index: 110;
-            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
         }
-
-        .suggestions-panel.visible {
+        
+        .suggestions-dropdown.show {
             display: block;
         }
 
         .suggestion-item {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            cursor: pointer;
-            border-bottom: 1px solid #f1f1f1;
-            transition: background 0.15s ease;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-glow);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            padding: 12px 16px;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
         }
 
         .suggestion-item:hover, .suggestion-item:focus {
-            background-color: #f9f9f9;
-            color: var(--accent-primary);
+            background: var(--bg-canvas) !important;
+            color: var(--text-main) !important;
+            outline: none;
         }
 
-        .suggestion-item .history-icon {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            background: #f1f1f1;
-            padding: 2px 6px;
-            border-radius: 2px;
-        }
-
-        /* Video Player Stage */
-        .player-section {
-            display: none;
-            width: 100%;
-            background: var(--surface-card);
-            border-radius: var(--radius-main);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            contain: layouts;
-        }
-
-        .player-section.active {
-            display: block;
-        }
-
-        .player-stage-bg {
-            background: var(--player-bg);
-            line-height: 0;
-        }
-
-        .player-aspect-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-        }
-
-        .player-aspect-wrapper iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border: 0;
-        }
-
-        /* Controls Area */
-        .player-controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 25px);
-            background: #fafafa;
-            border-top: 1px solid var(--border-color);
-            gap: 10px;
-        }
-
-        .control-nav-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 20px;
-            background-color: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-main);
-            color: var(--text-main);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .control-nav-btn:hover:not(:disabled), .control-nav-btn:focus-visible:not(:disabled) {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .control-nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .stream-indicator-text {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 0.02em;
-            text-align: center;
-        }
-
-        /* Performance Optimized Results Matrix */
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(clamp(240px, 22vw, 280px), 1fr));
-            gap: clamp(15px, 3vw, 25px);
-            width: 100%;
-        }
-
-        /* Premium exhibition Cards */
-        .video-card {
-            background-color: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-main);
-            padding: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease, border-color 0.2s ease;
+        /* Streaming Grid Cards Layout */
+        .video-card-wrapper {
             content-visibility: auto;
             contain-intrinsic-size: 320px;
         }
 
+        .video-card {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-glow) !important;
+            border-radius: 12px !important;
+            overflow: hidden;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+            cursor: pointer;
+            will-change: transform, border-color, box-shadow;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
         .video-card:hover, .video-card:focus-visible {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            border-color: var(--border-focus) !important;
+            box-shadow: 0 12px 24px -10px rgba(0,0,0,0.08);
             outline: none;
         }
 
-        .video-card.is-streaming {
-            border: 2px solid var(--accent-primary);
-            background: #f4fafd;
+        /* Dynamic Border Highlight for Active Media Context */
+        .video-card.border-active-track {
+            border-color: var(--text-main) !important;
+            background: var(--bg-card-hover) !important;
+            box-shadow: 0 0 0 1px var(--text-main);
         }
 
-        .thumb-frame {
-            width: 100%;
-            aspect-ratio: 16/9;
-            overflow: hidden;
+        /* Low Bandwidth Skeleton Shimmer Styles */
+        .loading-shimmer .video-card {
+            pointer-events: none;
             position: relative;
-            background-color: #eee;
-            margin-bottom: 12px;
-            border-radius: 2px;
         }
-
-        .video-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .type-badge {
+        
+        .loading-shimmer .video-card::before {
+            content: "";
             position: absolute;
-            top: 8px;
-            left: 8px;
-            padding: 3px 8px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            border-radius: 2px;
-            background-color: rgba(33, 37, 49, 0.85);
-            color: #ffffff;
-            z-index: 2;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--shimmer-gradient);
+            background-size: 200% 100%;
+            animation: lightShimmer 1.4s infinite linear;
+            z-index: 5;
         }
 
-        .playlist-badge-style {
-            background-color: var(--accent-primary) !important;
+        @keyframes lightShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .card-details {
+        /* Light Minimal Theater Modal System Layout Styling */
+        .modal-fullscreen-theater .modal-content {
+            background: var(--bg-canvas) !important; 
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
         }
 
-        .video-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-main);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+        .modal-fullscreen-theater .modal-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 1rem 1.5rem;
+            flex: 0 0 auto;
+        }
+
+        .modal-fullscreen-theater .modal-body {
+            background: #000000; /* Maintains standard black canvas for standard video player ratios */
+            flex: 1 1 auto;
             overflow: hidden;
+            position: relative;
         }
 
-        .channel-badge {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: auto;
-            padding-top: 6px;
-            border-top: 1px dashed #f1f1f1;
+        .modal-fullscreen-theater .modal-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-glow);
+            padding: 1rem 1.5rem;
+            flex: 0 0 auto;
         }
 
-        /* Footer Structural Framework */
-        .pagination-footer {
-            display: none;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .pill-load-btn {
-            padding: 12px 35px;
-            background-color: var(--accent-primary);
-            color: #ffffff;
+        .fullscreen-iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            border-radius: var(--radius-main);
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: background 0.2s ease;
+            display: block;
         }
 
-        .pill-load-btn:hover, .pill-load-btn:focus-visible {
-            background-color: var(--accent-hover);
+        /* Custom High-Contrast Navigation Buttons Fix */
+        .btn-theater-control {
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main) !important;
+            font-weight: 600;
         }
 
-        .loading-shimmer {
-            opacity: 0.5;
-            pointer-events: none;
+        .btn-theater-control:hover:not(:disabled) {
+            background: var(--accent-brand);
+            color: #ffffff !important;
+            border-color: var(--accent-brand);
         }
 
-        @media (max-width: 600px) {
-            .top-utility-bar {
-                flex-direction: column;
-                text-align: center;
-            }
-            .player-controls-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .control-nav-btn {
-                justify-content: center;
-            }
+        .btn-theater-control:disabled {
+            background: var(--bg-canvas);
+            border-color: var(--border-glow);
+            color: var(--text-muted) !important;
+            opacity: 0.4;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <header class="top-utility-bar">
-            <div class="brand-header">
-                <h1>Metsis <span>Studio</span></h1>
-                <p>Metsis Optimization Engine</p>
+    <header class="premium-navbar sticky-top py-3 mb-5">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <span class="brand-pill fw-bold text-uppercase text-white">Metsis Studio</span>
             </div>
-        </header>
+            <div class="text-end text-muted small d-none d-sm-block fw-medium">
+                <i class="bi bi-lightning-charge-fill text-dark opacity-75 me-1"></i> Developed by: Md. Mizanur Rahman Rony
+            </div>
+        </div>
+    </header>
 
-        <div class="search-system-wrapper" id="searchSystemWrapper">
-            <div class="search-container">
-                <div class="input-wrapper">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search videos or playlists..." autocomplete="off" aria-label="Search Input Grid">
+    <div class="container mb-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="position-relative" id="searchSystemWrapper">
+                    <div class="search-container-shell d-flex align-items-center">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0 pe-1"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="searchInput" class="form-control form-input-minimal py-2.5" placeholder="Search parameters, streams or playlists..." autocomplete="off" aria-label="Query input segment">
+                            <button class="btn btn-reset-field d-none px-2 me-1" type="button" id="clearBtn" aria-label="Clear context text input">
+                                <i class="bi bi-x-lg" style="font-size: 0.85rem;"></i>
+                            </button>
+                            <button class="btn btn-premium-solid btn-minimal px-4 my-1 me-1" type="button" id="searchBtn">
+                                <span class="spinner-border spinner-border-sm d-none me-2" id="searchSpinner" role="status" aria-hidden="true"></span>
+                                Discover
+                            </button>
+                        </div>
+                    </div>
+                    <div class="list-group suggestions-dropdown mt-1" id="suggestionsPanel" role="listbox"></div>
                 </div>
-                <button type="button" class="search-btn" id="searchBtn">Search</button>
             </div>
-            <div class="suggestions-panel" id="suggestionsPanel"></div>
         </div>
 
-        <section class="player-section" id="playerSection" aria-label="Media Playback Arena">
-            <div class="player-stage-bg">
-                <div class="player-aspect-wrapper">
-                    <iframe id="videoPlayer" src="" allowfullscreen 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
-                </div>
-            </div>
-            <div class="player-controls-bar">
-                <button class="control-nav-btn" id="prevStreamBtn" disabled>Previous</button>
-                <span class="stream-indicator-text" id="streamIndicator">ENGINE IDLE</span>
-                <button class="control-nav-btn" id="nextStreamBtn" disabled>Next</button>
-            </div>
-        </section>
+        <main class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5" id="resultsGrid"></main>
 
-        <main class="results-grid" id="resultsGrid"></main>
-
-        <footer class="pagination-footer" id="paginationContainer">
-            <button class="pill-load-btn" id="loadMoreBtn">Load More Content</button>
+        <footer class="d-none text-center py-4" id="paginationContainer">
+            <button class="btn btn-white bg-white btn-minimal px-5 py-2.5 border text-dark shadow-sm" id="loadMoreBtn">
+                <span class="spinner-border spinner-border-sm d-none me-2" id="loadMoreSpinner" role="status" aria-hidden="true"></span>
+                Load More Content
+            </button>
         </footer>
     </div>
 
+    <div class="modal fade modal-fullscreen-theater" id="playerModal" tabindex="-1" aria-labelledby="playerModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content border-0 rounded-0">
+                <div class="modal-header d-flex align-items-center justify-content-between">
+                    <h2 class="modal-title h6 text-truncate fw-semibold text-dark m-0 pe-4" id="playerModalTitle">Cinematic Playback Arena Stage</h2>
+                    <button type="button" class="btn-close small" data-bs-dismiss="modal" aria-label="Terminate Viewport View"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="videoPlayer" class="fullscreen-iframe" src="" allowfullscreen 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
+                </div>
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                    <button class="btn btn-theater-control btn-minimal px-4" id="prevStreamBtn" disabled>
+                        <i class="bi bi-arrow-left me-1"></i> Previous
+                    </button>
+                    <span class="fw-bold text-uppercase text-muted tracking-wider small" style="font-size: 0.75rem;" id="streamIndicator">STAGE IDLE</span>
+                    <button class="btn btn-theater-control btn-minimal px-4" id="nextStreamBtn" disabled>
+                        Next <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="errorToast" class="toast align-items-center text-dark bg-white border shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2 small">
+                    <i class="bi bi-info-circle-fill text-danger"></i>
+                    <span id="toastErrorMessage">An processing logic pipelines fault occurred.</span>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close error toast view"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        const API_KEY = "AIzaSyBqnF7lJJ-AHO2wsYOe2jvjloKNR5Qw8u0";
-        const HISTORY_STORAGE_KEY = "porto_studio_history_v1";
-        const maxResultsPerPage = 12;
+        class MetsisStudio {
+            constructor() {
+                this.API_KEY = "AIzaSyBqnF7lJJ-AHO2wsYOe2jvjloKNR5Qw8u0"; 
+                this.STORAGE_KEY = "porto_studio_history_v1";
+                this.MAX_RESULTS = 12;
 
-        let currentQuery = "";
-        let nextPageToken = "";
-        let loadedItemsCache = [];
-        let activeStreamIndex = -1;
-        let searchHistory = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+                this.currentQuery = "";
+                this.nextPageToken = "";
+                this.itemsCache = [];
+                this.activeIndex = -1;
+                this.searchHistory = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
 
-        // DOM elements cache
-        const searchInput = document.getElementById("searchInput");
-        const suggestionsPanel = document.getElementById("suggestionsPanel");
-        const resultsGrid = document.getElementById("resultsGrid");
-        const searchBtn = document.getElementById("searchBtn");
-        const loadMoreBtn = document.getElementById("loadMoreBtn");
-        const paginationContainer = document.getElementById("paginationContainer");
-        const playerSection = document.getElementById("playerSection");
-        const videoPlayer = document.getElementById("videoPlayer");
-        const prevStreamBtn = document.getElementById("prevStreamBtn");
-        const nextStreamBtn = document.getElementById("nextStreamBtn");
-        const streamIndicator = document.getElementById("streamIndicator");
-
-        // Native Performance Debouncer
-        function debounce(func, wait = 200) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        // Setup Event Listeners
-        searchInput.addEventListener("input", debounce(handleHistoryDisplay, 150));
-        searchInput.addEventListener("focus", handleHistoryDisplay);
-        searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") performNewSearch(); });
-        searchBtn.addEventListener("click", performNewSearch);
-        loadMoreBtn.addEventListener("click", fetchContent);
-        prevStreamBtn.addEventListener("click", () => navigateToStream(-1));
-        nextStreamBtn.addEventListener("click", () => navigateToStream(1));
-        
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest('#searchSystemWrapper')) {
-                suggestionsPanel.classList.remove("visible");
+                this.initDOMReferences();
+                this.initBootstrapContexts();
+                this.initEventBindings();
             }
-        });
 
-        // Event delegation for grid interactions (Performance gains)
-        resultsGrid.addEventListener("click", (e) => {
-            const card = e.target.closest(".video-card");
-            if (!card) return;
-            const index = parseInt(card.dataset.index, 10);
-            const id = card.dataset.id;
-            const isPlaylist = card.dataset.isPlaylist === "true";
-            instantiateTargetStream(id, isPlaylist, index);
-        });
+            initDOMReferences() {
+                this.searchInput = document.getElementById("searchInput");
+                this.clearBtn = document.getElementById("clearBtn");
+                this.suggestionsPanel = document.getElementById("suggestionsPanel");
+                this.resultsGrid = document.getElementById("resultsGrid");
+                this.searchBtn = document.getElementById("searchBtn");
+                this.searchSpinner = document.getElementById("searchSpinner");
+                this.loadMoreBtn = document.getElementById("loadMoreBtn");
+                this.loadMoreSpinner = document.getElementById("loadMoreSpinner");
+                this.paginationContainer = document.getElementById("paginationContainer");
+                this.modalElement = document.getElementById("playerModal");
+                this.videoPlayer = document.getElementById("videoPlayer");
+                this.modalTitle = document.getElementById("playerModalTitle");
+                this.prevStreamBtn = document.getElementById("prevStreamBtn");
+                this.nextStreamBtn = document.getElementById("nextStreamBtn");
+                this.streamIndicator = document.getElementById("streamIndicator");
+                this.searchWrapper = document.getElementById("searchSystemWrapper");
+                this.toastElement = document.getElementById("errorToast");
+                this.toastMessage = document.getElementById("toastErrorMessage");
+            }
 
-        resultsGrid.addEventListener("keydown", (e) => {
-            if (e.key !== 'Enter') return;
-            const card = e.target.closest(".video-card");
-            if (!card) return;
-            const index = parseInt(card.dataset.index, 10);
-            const id = card.dataset.id;
-            const isPlaylist = card.dataset.isPlaylist === "true";
-            instantiateTargetStream(id, isPlaylist, index);
-        });
-
-        // History Suggestions Panel Interaction Handler
-        suggestionsPanel.addEventListener("click", (e) => {
-            const item = e.target.closest(".suggestion-item");
-            if (!item) return;
-            searchInput.value = item.dataset.query;
-            suggestionsPanel.classList.remove("visible");
-            performNewSearch();
-        });
-
-        function handleHistoryDisplay() {
-            const value = searchInput.value.trim().toLowerCase();
-            suggestionsPanel.innerHTML = "";
-
-            const matches = searchHistory.filter(item => 
-                item.toLowerCase().includes(value)
-            ).reverse().slice(0, 5);
-
-            if (matches.length > 0) {
-                const fragment = document.createDocumentFragment();
-                matches.forEach(item => {
-                    const row = document.createElement("div");
-                    row.className = "suggestion-item";
-                    row.dataset.query = item;
-                    row.tabIndex = 0;
-                    row.innerHTML = `<span>${escapeHtml(item)}</span> <span class="history-icon">History</span>`;
-                    fragment.appendChild(row);
+            initBootstrapContexts() {
+                this.errorToast = new bootstrap.Toast(this.toastElement);
+                this.playerModal = new bootstrap.Modal(this.modalElement, {
+                    backdrop: 'static',
+                    keyboard: true
                 });
-                suggestionsPanel.appendChild(fragment);
-                suggestionsPanel.classList.add("visible");
-            } else {
-                suggestionsPanel.classList.remove("visible");
             }
-        }
 
-        function saveQueryToHistory(query) {
-            if (!query) return;
-            searchHistory = searchHistory.filter(item => item.toLowerCase() !== query.toLowerCase());
-            searchHistory.push(query);
-            if (searchHistory.length > 10) searchHistory.shift(); 
-            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(searchHistory));
-        }
+            initEventBindings() {
+                this.searchInput.addEventListener("input", this.debounce(() => this.handleSearchInputChange(), 120));
+                this.searchInput.addEventListener("focus", () => this.renderHistoryPanel());
+                this.searchInput.addEventListener("keydown", (e) => this.handleSearchInputKeyboardNav(e));
+                this.clearBtn.addEventListener("click", () => this.clearSearchField());
 
-        function performNewSearch() {
-            const query = searchInput.value.trim();
-            if (!query) return;
+                this.searchBtn.addEventListener("click", () => this.triggerNewSearch());
+                this.loadMoreBtn.addEventListener("click", () => this.executeContentFetch());
+                this.prevStreamBtn.addEventListener("click", () => this.shiftActiveStream(-1));
+                this.nextStreamBtn.addEventListener("click", () => this.shiftActiveStream(1));
+                
+                this.suggestionsPanel.addEventListener("keydown", (e) => this.handleSuggestionKeyboardNav(e));
 
-            currentQuery = query;
-            nextPageToken = ""; 
-            loadedItemsCache = [];
-            activeStreamIndex = -1;
-            
-            resultsGrid.innerHTML = "";
-            paginationContainer.style.display = "none"; 
-            playerSection.classList.remove("active");
-            videoPlayer.src = "";
-            suggestionsPanel.classList.remove("visible");
+                document.addEventListener("click", (e) => {
+                    if (!this.searchWrapper.contains(e.target)) {
+                        this.suggestionsPanel.classList.remove("show");
+                    }
+                });
 
-            saveQueryToHistory(query);
-            fetchContent();
-        }
+                this.resultsGrid.addEventListener("click", (e) => this.handleGridActivation(e));
+                this.resultsGrid.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") this.handleGridActivation(e);
+                });
+                this.suggestionsPanel.addEventListener("click", (e) => this.handleSuggestionSelection(e));
 
-        async function fetchContent() {
-            if (!currentQuery) return;
-            toggleSearchLoadingState(true);
+                this.modalElement.addEventListener("hidden.bs.modal", () => {
+                    this.videoPlayer.src = ""; 
+                });
+            }
 
-            let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResultsPerPage}&q=${encodeURIComponent(currentQuery)}&type=video,playlist&key=${API_KEY}`;
-            if (nextPageToken) url += `&pageToken=${nextPageToken}`;
+            debounce(func, delay) {
+                let timer;
+                return (...args) => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => func.apply(this, args), delay);
+                };
+            }
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+            showError(msg) {
+                this.toastMessage.innerText = msg;
+                this.errorToast.show();
+            }
 
-                toggleSearchLoadingState(false);
+            handleSearchInputChange() {
+                this.toggleClearButtonVisibility();
+                this.renderHistoryPanel();
+            }
 
-                if (data.error) {
-                    alert(`API Error: ${data.error.message}`);
+            toggleClearButtonVisibility() {
+                this.clearBtn.classList.toggle("d-none", this.searchInput.value.trim().length === 0);
+            }
+
+            clearSearchField() {
+                this.searchInput.value = "";
+                this.toggleClearButtonVisibility();
+                this.suggestionsPanel.classList.remove("show");
+                this.searchInput.focus();
+            }
+
+            renderHistoryPanel() {
+                const value = this.searchInput.value.trim().toLowerCase();
+                this.suggestionsPanel.innerHTML = "";
+
+                const matches = this.searchHistory.filter(item => 
+                    item.toLowerCase().includes(value)
+                ).reverse().slice(0, 5);
+
+                if (matches.length > 0) {
+                    const fragment = document.createDocumentFragment();
+                    matches.forEach((item, index) => {
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.className = "list-group-item list-group-item-action d-flex justify-content-between align-items-center suggestion-item text-start";
+                        button.dataset.query = item;
+                        button.setAttribute("role", "option");
+                        button.setAttribute("id", `suggestion-opt-${index}`);
+                        button.innerHTML = `<span><i class="bi bi-clock text-muted me-2.5"></i>${this.escapeHtml(item)}</span><span class="text-muted small" style="font-size:0.72rem;">History</span>`;
+                        fragment.appendChild(button);
+                    });
+                    this.suggestionsPanel.appendChild(fragment);
+                    this.suggestionsPanel.classList.add("show");
+                } else {
+                    this.suggestionsPanel.classList.remove("show");
+                }
+            }
+
+            handleSearchInputKeyboardNav(e) {
+                if (e.key === "Enter") {
+                    this.triggerNewSearch();
+                    this.suggestionsPanel.classList.remove("show");
+                } else if (e.key === "ArrowDown" && this.suggestionsPanel.classList.contains("show")) {
+                    const firstOption = this.suggestionsPanel.querySelector(".suggestion-item");
+                    if (firstOption) firstOption.focus();
+                    e.preventDefault();
+                }
+            }
+
+            handleSuggestionKeyboardNav(e) {
+                const currentFocus = document.activeElement;
+                if (!currentFocus.classList.contains("suggestion-item")) return;
+
+                if (e.key === "ArrowDown") {
+                    const next = currentFocus.nextElementSibling;
+                    if (next) next.focus();
+                    e.preventDefault();
+                } else if (e.key === "ArrowUp") {
+                    const prev = currentFocus.previousElementSibling;
+                    if (prev) {
+                        prev.focus();
+                    } else {
+                        this.searchInput.focus();
+                    }
+                    e.preventDefault();
+                } else if (e.key === "Escape") {
+                    this.suggestionsPanel.classList.remove("show");
+                    this.searchInput.focus();
+                }
+            }
+
+            handleSuggestionSelection(e) {
+                const item = e.target.closest(".suggestion-item");
+                if (!item) return;
+                this.searchInput.value = item.dataset.query;
+                this.toggleClearButtonVisibility();
+                this.suggestionsPanel.classList.remove("show");
+                this.triggerNewSearch();
+            }
+
+            saveQueryToLocalStorage(query) {
+                if (!query) return;
+                this.searchHistory = this.searchHistory.filter(item => item.toLowerCase() !== query.toLowerCase());
+                this.searchHistory.push(query);
+                if (this.searchHistory.length > 8) this.searchHistory.shift();
+                localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.searchHistory));
+            }
+
+            triggerNewSearch() {
+                const query = this.searchInput.value.trim();
+                if (!query) return;
+
+                this.currentQuery = query;
+                this.nextPageToken = "";
+                this.itemsCache = [];
+                this.activeIndex = -1;
+
+                this.resultsGrid.innerHTML = "";
+                this.paginationContainer.classList.add("d-none");
+                this.suggestionsPanel.classList.remove("show");
+
+                this.saveQueryToLocalStorage(query);
+                this.executeContentFetch();
+            }
+
+            async executeContentFetch() {
+                if (!this.currentQuery) return;
+                this.setLoadingState(true);
+
+                let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${this.MAX_RESULTS}&q=${encodeURIComponent(this.currentQuery)}&type=video,playlist&key=${this.API_KEY}`;
+                if (this.nextPageToken) url += `&pageToken=${this.nextPageToken}`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    this.setLoadingState(false);
+
+                    if (data.error) {
+                        this.showError(`Error processing search stream pipeline layout.`);
+                        return;
+                    }
+
+                    this.nextPageToken = data.nextPageToken || "";
+                    if (data.items && data.items.length > 0) {
+                        this.itemsCache = this.itemsCache.concat(data.items);
+                    }
+
+                    this.renderGridItems(data.items);
+                    this.syncControlInterface();
+                    
+                    this.paginationContainer.classList.toggle("d-none", !this.nextPageToken);
+
+                } catch (error) {
+                    this.setLoadingState(false);
+                    this.showError("Connection data frame transmission translation failure exception.");
+                    console.error("Pipeline failure context mapping parse logic errors:", error);
+                }
+            }
+
+            setLoadingState(isLoading) {
+                this.searchBtn.disabled = isLoading;
+                this.loadMoreBtn.disabled = isLoading;
+                this.searchSpinner.classList.toggle("d-none", !isLoading);
+                this.loadMoreSpinner.classList.toggle("d-none", !isLoading);
+                this.resultsGrid.classList.toggle("loading-shimmer", isLoading);
+            }
+
+            renderGridItems(items) {
+                const baseIndex = this.itemsCache.length - items.length;
+                if ((!items || items.length === 0) && !this.nextPageToken) {
+                    this.resultsGrid.innerHTML = `
+                        <div class="col-12 w-100 text-center py-5 text-muted small fw-medium">
+                            No structural matching indexes discovered in current matrix search track parameters configuration mappings.
+                        </div>`;
                     return;
                 }
 
-                nextPageToken = data.nextPageToken || "";
-                if (data.items && data.items.length > 0) {
-                    loadedItemsCache = loadedItemsCache.concat(data.items);
+                const fragment = document.createDocumentFragment();
+                items.forEach((item, idx) => {
+                    const globalIndex = baseIndex + idx;
+                    const isPlaylist = item.id.kind === "youtube#playlist";
+                    const targetId = isPlaylist ? item.id.playlistId : item.id.videoId;
+
+                    const title = this.escapeHtml(item.snippet.title);
+                    const thumbnail = this.escapeHtml(item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || "");
+                    const channel = this.escapeHtml(item.snippet.channelTitle);
+
+                    const colWrapper = document.createElement("div");
+                    colWrapper.className = "col video-card-wrapper";
+
+                    colWrapper.innerHTML = `
+                        <article class="card h-100 video-card border-0 shadow-sm" 
+                                 id="video-card-${globalIndex}" tabIndex="0" data-index="${globalIndex}" 
+                                 data-id="${targetId}" data-is-playlist="${isPlaylist}" role="button" aria-label="Deploy Fullscreen Media Theater Playback Stage for: ${title}">
+                            <div class="ratio ratio-16x9 bg-light">
+                                <img src="${thumbnail}" class="card-img-top object-fit-cover" alt="" loading="lazy">
+                            </div>
+                            <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex align-items-center gap-1.5 mb-2 text-muted uppercase tracking-wider" style="font-size:0.68rem; font-weight:700;">
+                                        <i class="bi ${isPlaylist ? 'bi-folder2-open text-primary' : 'bi-play-circle-fill text-danger'}"></i>
+                                        <span class="text-muted ms-1">${isPlaylist ? 'Playlist' : 'Video'}</span>
+                                    </div>
+                                    <h3 class="card-title h6 fw-semibold mb-1 text-dark" style="-webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; height: 2.4rem; overflow: hidden; line-height: 1.25; font-size: 0.9rem;">${title}</h3>
+                                </div>
+                                <div class="pt-2 text-muted small text-truncate fw-medium mt-1" style="font-size:0.78rem;">
+                                    ${channel}
+                                </div>
+                            </div>
+                        </article>
+                    `;
+                    fragment.appendChild(colWrapper);
+                });
+
+                this.resultsGrid.appendChild(fragment);
+            }
+
+            handleGridActivation(e) {
+                const card = e.target.closest(".video-card");
+                if (!card) return;
+
+                const index = parseInt(card.dataset.index, 10);
+                const id = card.dataset.id;
+                const isPlaylist = card.dataset.isPlaylist === "true";
+                this.deployStreamInstance(id, isPlaylist, index);
+            }
+
+            deployStreamInstance(id, isPlaylist, index) {
+                this.activeIndex = index;
+                const asset = this.itemsCache[index];
+                const activeTitle = asset ? this.escapeHtml(asset.snippet.title) : "Media Theater Fullscreen Playback Arena Stage";
+
+                const src = isPlaylist
+                    ? `https://www.youtube-nocookie.com/embed/videoseries?list=${this.escapeHtml(id)}&autoplay=1`
+                    : `https://www.youtube-nocookie.com/embed/${this.escapeHtml(id)}?autoplay=1&rel=0`;
+
+                this.videoPlayer.src = src;
+                this.modalTitle.innerHTML = activeTitle;
+
+                document.querySelectorAll(".video-card").forEach(card => {
+                    const activeMatch = parseInt(card.dataset.index, 10) === index;
+                    card.classList.toggle("border-active-track", activeMatch);
+                    card.setAttribute("aria-current", activeMatch ? "true" : "false");
+                });
+
+                this.syncControlInterface();
+                this.playerModal.show();
+            }
+
+            shiftActiveStream(offset) {
+                const nextTargetIndex = this.activeIndex + offset;
+                if (nextTargetIndex < 0 || nextTargetIndex >= this.itemsCache.length) return;
+
+                const asset = this.itemsCache[nextTargetIndex];
+                const isPlaylist = asset.id.kind === "youtube#playlist";
+                const targetId = isPlaylist ? asset.id.playlistId : asset.id.videoId;
+
+                this.deployStreamInstance(targetId, isPlaylist, nextTargetIndex);
+            }
+
+            syncControlInterface() {
+                if (this.activeIndex === -1 || this.itemsCache.length === 0) {
+                    this.prevStreamBtn.disabled = true;
+                    this.nextStreamBtn.disabled = true;
+                    this.streamIndicator.innerText = "STAGE IDLE";
+                    return;
                 }
 
-                renderGridElements(data.items);
-                updateControlBarState();
-                paginationContainer.style.display = nextPageToken ? "flex" : "none";
+                this.prevStreamBtn.disabled = (this.activeIndex === 0);
+                this.nextStreamBtn.disabled = (this.activeIndex === this.itemsCache.length - 1);
+                this.streamIndicator.innerText = `${this.activeIndex + 1} / ${this.itemsCache.length}`;
+            }
 
-            } catch (error) {
-                toggleSearchLoadingState(false);
-                console.error("Fetch failure:", error);
+            escapeHtml(str) {
+                if (!str) return "";
+                return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
             }
         }
 
-        function toggleSearchLoadingState(isLoading) {
-            searchBtn.disabled = isLoading;
-            loadMoreBtn.disabled = isLoading;
-            loadMoreBtn.innerText = isLoading ? "LOADING..." : "Load More Content";
-            resultsGrid.classList.toggle('loading-shimmer', isLoading);
-        }
-
-        function renderGridElements(items) {
-            const baseStartIndex = loadedItemsCache.length - items.length;
-            if ((!items || items.length === 0) && !nextPageToken) {
-                resultsGrid.innerHTML = `<div style="text-align:center; color:var(--text-muted); grid-column: 1/-1; padding: 50px 20px;">No matches found for requested parameters.</div>`;
-                return;
-            }
-
-            const fragment = document.createDocumentFragment();
-            items.forEach((item, index) => {
-                const globalIndex = baseStartIndex + index;
-                const isPlaylist = item.id.kind === "youtube#playlist";
-                const targetId = isPlaylist ? item.id.playlistId : item.id.videoId;
-                
-                const title = escapeHtml(item.snippet.title);
-                const thumbnail = escapeHtml(item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || '');
-                const channel = escapeHtml(item.snippet.channelTitle);
-
-                const card = document.createElement("article");
-                card.className = "video-card";
-                card.id = `video-card-${globalIndex}`;
-                card.tabIndex = 0;
-                card.setAttribute("aria-label", `Play stream: ${title}`);
-                
-                // Attach custom dataset attributes instead of creating individual closures
-                card.dataset.index = globalIndex;
-                card.dataset.id = targetId;
-                card.dataset.isPlaylist = isPlaylist;
-
-                const badgeClass = isPlaylist ? "type-badge playlist-badge-style" : "type-badge";
-
-                card.innerHTML = `
-                    <div class="thumb-frame">
-                        <span class="${badgeClass}">${isPlaylist ? 'PLAYLIST' : 'VIDEO'}</span>
-                        <img src="${thumbnail}" alt="${title}" loading="lazy">
-                    </div>
-                    <div class="card-details">
-                        <h2 class="video-title">${title}</h2>
-                        <div class="channel-badge"><span>${channel}</span></div>
-                    </div>
-                `;
-                fragment.appendChild(card);
-            });
-
-            resultsGrid.appendChild(fragment);
-        }
-
-        function instantiateTargetStream(id, isPlaylist, itemIndex) {
-            activeStreamIndex = itemIndex;
-            const sourceUrl = isPlaylist 
-                ? `https://www.youtube-nocookie.com/embed/videoseries?list=${escapeHtml(id)}&autoplay=1`
-                : `https://www.youtube-nocookie.com/embed/${escapeHtml(id)}?autoplay=1&rel=0`;
-            
-            videoPlayer.src = sourceUrl;
-            playerSection.classList.add("active");
-
-            // Efficient target element matching
-            document.querySelectorAll(".video-card").forEach(card => {
-                const isCurrent = parseInt(card.dataset.index, 10) === itemIndex;
-                card.classList.toggle("is-streaming", isCurrent);
-                card.setAttribute("aria-current", isCurrent ? "true" : "false");
-            });
-
-            updateControlBarState();
-            playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function navigateToStream(offset) {
-            const newTargetIndex = activeStreamIndex + offset;
-            if (newTargetIndex < 0 || newTargetIndex >= loadedItemsCache.length) return;
-
-            const targetAsset = loadedItemsCache[newTargetIndex];
-            const isPlaylist = targetAsset.id.kind === "youtube#playlist";
-            const targetId = isPlaylist ? targetAsset.id.playlistId : targetAsset.id.videoId;
-
-            instantiateTargetStream(targetId, isPlaylist, newTargetIndex);
-        }
-
-        function updateControlBarState() {
-            if (activeStreamIndex === -1 || loadedItemsCache.length === 0) {
-                prevStreamBtn.disabled = true;
-                nextStreamBtn.disabled = true;
-                streamIndicator.innerText = "ENGINE IDLE";
-                return;
-            }
-
-            prevStreamBtn.disabled = (activeStreamIndex === 0);
-            nextStreamBtn.disabled = (activeStreamIndex === loadedItemsCache.length - 1);
-            streamIndicator.innerText = `STREAM ${activeStreamIndex + 1} OF ${loadedItemsCache.length}`;
-        }
-
-        function escapeHtml(str) {
-            if(!str) return '';
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            window.AppInstance = new MetsisStudio();
+        });
     </script>
 </body>
 </html>

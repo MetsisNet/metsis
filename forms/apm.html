@@ -1,334 +1,245 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metsis Vault - Password Manager</title>
+    <title>Metsis Vault - Advanced Light Crypto Repository</title>
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts & Bootstrap Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
         :root {
-            --bg-canvas: #f7f7f7;
-            --bg-surface: #ffffff;
-            --bg-panel-header: #fdfdfd;
-            --accent: #0088cc;
-            --accent-hover: #0077b3;
-            --accent-glow: rgba(0, 136, 204, 0.1);
-            --text-main: #21262d;
-            --text-muted: #777777;
-            --border-color: #e7e7e7;
-            --field-border: #cccccc;
-            --success: #47a447;
-            --success-hover: #3e903e;
-            --danger: #d2322d;
-            --danger-hover: #bd2d29;
-            --font-family: "Open Sans", Arial, sans-serif;
-            --radius-lg: 4px;
-            --radius-md: 4px;
-            --radius-sm: 2px;
-            --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 1px 4px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 2px 10px rgba(0, 0, 0, 0.15);
+            --bs-font-sans-serif: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bs-font-monospace: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --vault-bg: #f4f6f9;
+            --vault-card: #ffffff;
+            --vault-border: #e2e8f0;
+            --vault-accent: #0088cc;
+            --vault-text-muted: #64748b;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: var(--font-family);
-            background-color: var(--bg-canvas);
-            color: var(--text-main);
+            background-color: var(--vault-bg);
+            color: #1e293b;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: stretch;
-            -webkit-font-smoothing: antialiased;
         }
-
-        .container { width: 100%; display: flex; flex-direction: column; min-height: 100vh; }
-
-        /* PORTO CLASSIC AUTH WALL */
-        .porto-auth-shell {
-            max-width: 450px;
-            width: calc(100% - 2rem);
-            margin: auto;
-            background: var(--bg-surface);
-            border-radius: var(--radius-lg);
-            padding: 2rem 2.5rem;
-            box-shadow: var(--shadow-lg);
-            border-top: 5px solid var(--accent);
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            transform: translateY(-5%);
+        .crypto-card {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--vault-accent);
         }
-
-        /* HEADER BRANDING STRIP */
-        .porto-header {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 65px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
-            flex-wrap: wrap;
-            gap: 1rem;
+        .autocomplete-wrapper, .search-container {
+            position: relative;
+            width: 100%;
         }
-        .porto-logo { font-size: 1.4rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em; }
-        .porto-logo span { color: var(--accent); font-weight: 300; }
-        .tenant-badge { font-size: 0.75rem; background: #fafafa; color: var(--text-muted); padding: 0.3rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-weight: 600; }
-        .header-actions-group { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-
-        /* PORTLET INTERFACE CONTAINER STREAM */
-        .homepage-stream { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; max-width: 1650px; width: 100%; margin: 0 auto; }
-        .pane-title { font-size: 1.2rem; font-weight: 400; color: #333333; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-
-        .autocomplete-wrapper { position: relative; width: 100%; }
-        .field-suggest-box {
-            position: absolute; top: calc(100% + 1px); left: 0; right: 0;
-            background: var(--bg-surface); border: 1px solid var(--field-border);
-            border-radius: var(--radius-sm); z-index: 2500; box-shadow: var(--shadow-md);
-            max-height: 180px; overflow-y: auto; display: none;
+        /* Overflow & Absolute Fix for Suggestion Boxes */
+        .field-suggest-box, .google-suggest-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--vault-card);
+            border: 1px solid var(--vault-border);
+            border-radius: 0.375rem;
+            z-index: 2500;
+            max-height: 220px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            display: none;
+            contain: content;
         }
-        .field-suggest-item { padding: 0.6rem 0.85rem; cursor: pointer; font-size: 0.85rem; color: var(--text-main); border-bottom: 1px solid var(--border-color); }
-        .field-suggest-item:hover { background: #f4f4f4; color: var(--accent); }
-
-        /* MODAL CORES & LAYOUT STRUCTURAL FORM SEPARATORS */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.15s linear; padding: 1rem; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .modal-box { background: var(--bg-surface); width: 100%; max-width: 500px; border-radius: var(--radius-lg); border-top: 4px solid var(--accent); box-shadow: var(--shadow-lg); padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; position: relative; max-height: calc(100vh - 2rem); overflow-y: auto; }
-        .modal-box.modal-wide { max-width: 850px; width: 100%; }
-
-        /* ADVANCED CONFIGURATION GRID */
-        .form-grid-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 1.5rem; width: 100%; }
-        .form-grid-full-width { grid-column: span 2; }
-        .form-grid-triple { grid-column: span 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-
-        .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0; width: 100%; position: relative; }
-        label { font-size: 0.8rem; font-weight: 700; color: #555555; }
-        input, textarea {
-            background: #ffffff; border: 1px solid var(--field-border);
-            color: var(--text-main); padding: 0 0.75rem; border-radius: var(--radius-md);
-            font-size: 0.9rem; width: 100%; font-family: var(--font-family);
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; height: 38px;
+        .field-suggest-item, .google-suggest-item {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--vault-border);
+            transition: all 0.1s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #334155;
         }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 8px rgba(0,136,204,0.3); }
-        textarea { height: 75px !important; padding: 0.5rem 0.75rem; resize: none; }
-
-        .pass-input-container { position: relative; display: flex; width: 100%; }
-        .pass-input-container input { padding-right: 4.5rem; }
-        .gen-btn {
-            position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
-            background: #eeeeee; color: #333333; border: 1px solid #cccccc; font-size: 0.7rem;
-            padding: 0 0.65rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer;
-            height: 28px; line-height: 26px; text-transform: uppercase;
+        .field-suggest-item:hover, .google-suggest-item:hover {
+            background: #f1f5f9;
+            color: var(--vault-accent);
         }
-        .gen-btn:hover { background: #e0e0e0; border-color: #bbbbbb; }
-
-        button {
-            background: var(--accent); color: #ffffff; border: 1px solid var(--accent-hover);
-            padding: 0.5rem 1.25rem; border-radius: var(--radius-md); font-weight: 600;
-            cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-            height: 38px; transition: all 0.1s; box-shadow: var(--shadow-sm); white-space: nowrap;
+        /* Performance Optimization: Grid Container Constraint */
+        .grid-rows-container {
+            contain: content;
         }
-        button:hover { background: var(--accent-hover); border-color: #006699; }
-        button:active { box-shadow: inset 0 3px 5px rgba(0,0,0,0.125); }
-        button.secondary { background: #ffffff; border: 1px solid #cccccc; color: #333333; }
-        button.secondary:hover { background: #ebebeb; border-color: #adadad; }
-        button.danger { background: var(--danger); border-color: var(--danger-hover); color: #ffffff; }
-        button.danger:hover { background: var(--danger-hover); border-color: #ac2925; }
-
-        /* PORTO CONTROL WIDGET PANEL */
-        .search-container { position: relative; width: 100%; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-surface); padding: 1.25rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
-        .search-filters-strip { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); flex-wrap: wrap; gap: 0.5rem; }
-        .search-chk-group { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-        .search-chk-group label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; color: #666666; font-weight: 600; }
-        .search-chk-group label:hover { color: var(--text-main); }
-        .search-chk-group input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: var(--accent); }
-
-        .metrics-counter-badge { font-size: 0.75rem; background: #fafafa; color: var(--text-muted); padding: 0.3rem 0.7rem; border-radius: 2px; font-weight: 600; border: 1px solid var(--border-color); }
-        .metrics-counter-badge span { color: var(--text-main); font-weight: 700; }
-
-        .search-bar-ui {
-            display: flex; align-items: center; background: #ffffff;
-            border: 1px solid var(--field-border); border-radius: var(--radius-md);
-            height: 40px; padding: 0 0.85rem; gap: 0.75rem; position: relative;
-        }
-        .search-bar-ui:focus-within { border-color: var(--accent); box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 8px rgba(0,136,204,0.3); }
-        .search-bar-ui input { background: transparent; border: none; color: var(--text-main); font-size: 0.9rem; height: 100%; flex: 1; box-shadow: none; }
-        .search-bar-ui input:focus { outline: none; box-shadow: none; }
-        .search-clear-btn { background: transparent; color: var(--text-muted); border: none; cursor: pointer; font-size: 1.15rem; display: none; }
-
-        .google-suggest-dropdown {
-            position: absolute; top: calc(100% + 2px); left: 0; right: 0;
-            background: var(--bg-surface); border: 1px solid var(--field-border);
-            border-radius: var(--radius-sm); z-index: 999; box-shadow: var(--shadow-lg); max-height: 220px; overflow-y: auto; display: none;
-        }
-        .google-suggest-item { padding: 0.65rem 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
-        .google-suggest-item:hover { background: #f4f4f4; color: var(--accent); }
-        .suggest-tag { font-size: 0.65rem; color: #ffffff; font-weight: 700; text-transform: uppercase; background: var(--text-muted); padding: 0.15rem 0.4rem; border-radius: 2px; }
-
-        /* HIGH-PERFORMANCE DATA TABLE WORKSPACE */
         .grid-header-strip {
-            display: grid; grid-template-columns: 55px 1.2fr 0.8fr 1.2fr 0.9fr 0.7fr 0.7fr 0.7fr 1.5fr 1fr 130px; gap: 0.5rem;
-            padding: 0.85rem 1rem; background: var(--bg-panel-header); color: #333333;
-            font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-lg) var(--radius-lg) 0 0; border: 1px solid var(--border-color); border-bottom: 2px solid #dddddd;
+            display: grid;
+            grid-template-columns: 60px 1.2fr 1fr 1.2fr 1fr 0.6fr 0.6fr 0.6fr 1.3fr 1fr 140px;
+            gap: 0.5rem;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem 0.375rem 0 0;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
         }
-        .grid-rows-container { display: flex; flex-direction: column; background: var(--bg-surface); border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); border-radius: 0 0 var(--radius-lg) var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-        .grid-row-item { display: grid; grid-template-columns: 55px 1.2fr 0.8fr 1.2fr 0.9fr 0.7fr 0.7fr 0.7fr 1.5fr 1fr 130px; gap: 0.5rem; padding: 0.85rem 1rem; border-bottom: 1px solid #f0f0f0; align-items: center; font-size: 0.8rem; color: #666666; }
-        .grid-row-item:hover { background: #fbfbfb; }
-        .grid-row-item:last-child { border-bottom: none; }
-        .grid-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; min-width: 0; }
-        .grid-cell .cell-label { display: none; }
+        .grid-row-item {
+            display: grid;
+            grid-template-columns: 60px 1.2fr 1fr 1.2fr 1fr 0.6fr 0.6fr 0.6fr 1.3fr 1fr 140px;
+            gap: 0.5rem;
+            background: var(--vault-card);
+            border: 1px solid var(--vault-border);
+            border-top: none;
+            transition: background 0.1s ease;
+        }
+        .grid-row-item:hover {
+            background: #f8fafc;
+        }
+        /* Global Text-Overflow Clamp Strategy */
+        .grid-cell {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .cell-label { display: none; }
 
-        .btn-copy-modal { background: #ffffff; color: #333333; padding: 0.25rem 0.6rem; font-size: 0.75rem; border: 1px solid #cccccc; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; margin-left: auto; height: 26px; }
-        .btn-copy-modal:hover { background: #ebebeb; border-color: #adadad; }
-        .btn-copy-modal.copied-success { background: var(--success) !important; color: #ffffff !important; border-color: var(--success-hover) !important; }
-
-        .grid-action-cell { display: flex; justify-content: flex-end; gap: 0.35rem; }
-        .grid-action-cell button { padding: 0 0.5rem; font-size: 0.75rem; background: #ffffff; color: #333333; border: 1px solid #cccccc; height: 28px; }
-        .grid-action-cell button:hover { background: var(--accent); border-color: var(--accent-hover); color: #ffffff; }
-
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        .modal-title { font-size: 1.2rem; font-weight: 400; color: #333333; }
-        .modal-close-trigger { font-size: 1.4rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
-        .modal-close-trigger:hover { color: var(--danger); }
-        
-        .modal-row { display: flex; align-items: center; padding: 0.65rem 0.85rem; background: #fbfbfb; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.85rem; gap: 1rem; }
-        .modal-label { font-weight: 700; font-size: 0.8rem; color: #555555; width: 110px; flex-shrink: 0; }
-        .modal-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-main); flex: 1; }
-
-        .hidden { display: none !important; }
-
-        /* ==========================================================================
-           RESPONSIVE ENGINE STYLES (MOBILE INTERFACE OPTIMIZATIONS)
-           ========================================================================== */
-        @media (max-width: 1200px) {
+        @media (max-width: 1300px) {
             .grid-header-strip { display: none; }
-            .grid-rows-container { border: none; background: transparent; gap: 1rem; box-shadow: none; }
-            
+            .grid-rows-container { display: flex; flex-direction: column; gap: 1rem; }
             .grid-row-item {
                 display: flex;
                 flex-direction: column;
-                align-items: stretch;
-                background: var(--bg-surface);
-                border: 1px solid var(--border-color);
-                border-radius: var(--radius-lg);
-                padding: 1.25rem;
-                gap: 0.65rem;
-                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--vault-border) !important;
+                border-radius: 0.5rem;
+                padding: 1rem !important;
             }
-            .grid-row-item:last-child { border-bottom: 1px solid var(--border-color); }
-            
             .grid-cell {
                 display: flex;
                 justify-content: space-between;
-                white-space: normal;
-                overflow: visible;
-                text-overflow: clip;
-                font-size: 0.9rem;
+                align-items: center;
+                padding: 0.25rem 0;
+                border-bottom: 1px solid #f1f5f9;
+                width: 100%;
             }
-            .grid-cell .cell-label {
+            .grid-cell:last-of-type { border-bottom: none; }
+            .cell-label {
                 display: block;
                 font-weight: 700;
-                color: #555555;
                 font-size: 0.75rem;
+                color: var(--vault-text-muted);
                 text-transform: uppercase;
-                width: 130px;
+                margin-right: 1rem;
                 flex-shrink: 0;
-                text-align: left;
-            }
-            .grid-cell > *:not(.cell-label) {
-                flex: 1;
-                text-align: right;
-                display: inline-block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
             }
             .grid-action-cell {
                 justify-content: flex-end;
-                margin-top: 0.5rem;
-                border-top: 1px solid #f0f0f0;
-                padding-top: 0.75rem;
-            }
-            .grid-action-cell button {
-                flex: 1;
-                height: 36px;
-                font-size: 0.85rem;
+                padding-top: 0.5rem;
             }
         }
-
-        @media (max-width: 768px) {
-            .homepage-stream { padding: 1rem; }
-            .porto-header { padding: 1rem; justify-content: center; text-align: center; }
-            .header-actions-group { width: 100%; justify-content: center; }
-            .header-actions-group button { flex: 1; min-width: 130px; font-size: 0.8rem; padding: 0 0.5rem; }
-            
-            .form-grid-layout { grid-template-columns: 1fr; gap: 1rem; }
-            .form-grid-full-width { grid-column: span 1; }
-            .form-grid-triple { grid-column: span 1; grid-template-columns: 1fr; gap: 1rem; }
-            
-            .modal-row { flex-wrap: wrap; gap: 0.5rem; }
-            .modal-value { width: 100%; text-align: left; order: 3; flex: none; background: #f0f0f0; padding: 0.5rem; border-radius: 2px; margin-top: 0.25rem; }
-            .btn-copy-modal { margin-left: auto; order: 2; }
-        }
+        .monospace { font-family: var(--bs-font-monospace); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="auth-screen" class="porto-auth-shell">
-        <div style="font-size: 1.5rem; font-weight: 300; color: var(--text-main); margin-bottom: 1.75rem; text-align: center;">Metsis Vault <strong>Log In</strong></div>
-        <div class="form-group"><label for="master-username">Username</label><input type="text" id="master-username" autocomplete="off"></div>
-        <div class="form-group" style="margin-top: 1rem;"><label for="master-password">Password</label><input type="password" id="master-password"></div>
-        <button id="btn-unlock" style="margin-top: 1.75rem; width: 100%;">Unlock Repository</button>
+<div class="container-fluid min-vh-100 d-flex flex-column p-0">
+    <!-- AUTH WALL -->
+    <div id="auth-screen" class="d-flex flex-column justify-content-center align-items-center flex-grow-1 px-3">
+        <div class="card crypto-card w-100" style="max-width: 450px;">
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-light mb-1">Metsis <span class="text-primary fw-bold">Vault</span></h2>
+                    <p class="text-muted small">Sub-Quantum Client Encrypted Node Registry</p>
+                </div>
+                <div class="mb-3">
+                    <label for="master-username" class="form-label small fw-bold text-secondary">Security Operator Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-secondary-subtle text-muted"><i class="bi bi-person"></i></span>
+                        <input type="text" id="master-username" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="master-password" class="form-label small fw-bold text-secondary">Operational Master Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-secondary-subtle text-muted"><i class="bi bi-key"></i></span>
+                        <input type="password" id="master-password" class="form-control">
+                    </div>
+                </div>
+                <button id="btn-unlock" class="btn btn-primary w-100 fw-bold py-2"><i class="bi bi-shield-lock-fill me-2"></i>Unlock Repository</button>
+            </div>
+        </div>
     </div>
 
-    <div id="app-screen" class="hidden" style="display: flex; flex-direction: column; flex: 1;">
-        <header class="porto-header">
-            <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; justify-content: center;">
-                <div class="porto-logo">Metsis <span>Vault</span></div>
-                <div class="tenant-badge" id="display-tenant">Scope: Tracking</div>
-            </div>
-            <div class="header-actions-group">
-                <button id="btn-open-entry" style="background: var(--success); border-color: var(--success-hover);">+ Add Entry</button>
-                <button id="btn-open-security" class="secondary">⚙ Rotation</button>
-                <button id="btn-export" class="secondary">Export JSON</button>
-                <button id="btn-export-csv" class="secondary" style="border-color: #0088cc; color: #0088cc; background: #ffffff;">Export CSV</button>
-                <button id="btn-import" class="secondary">Import JSON</button>
-                <button id="btn-import-csv" class="secondary" style="border-color: #47a447; color: #47a447; background: #ffffff;">Import CSV</button>
+    <!-- MAIN APP INTERFACE -->
+    <div id="app-screen" class="d-none flex-column flex-grow-1">
+        <nav class="navbar navbar-expand-xl navbar-light bg-white border-bottom border-secondary-subtle sticky-top px-3 py-2">
+            <div class="container-fluid gap-3">
+                <a class="navbar-brand fw-bold fs-4" href="#">Metsis <span class="text-primary fw-light">Vault</span></a>
+                <span class="badge bg-light text-dark border border-secondary-subtle" id="display-tenant">Scope: Inactive</span>
                 
-                <input type="file" id="import-file-input" class="hidden" accept=".json">
-                <input type="file" id="import-csv-input" class="hidden" accept=".csv">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navActions">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 
-                <button id="btn-lock" class="danger">Sign Out</button>
-            </div>
-        </header>
-
-        <main class="homepage-stream">
-            <div class="pane-title">Registry Records Datagrid</div>
-            <div class="search-container">
-                <div class="search-filters-strip">
-                    <div class="search-chk-group">
-                        <label><input type="checkbox" id="chk-filter-site"> Site Name</label>
-                        <label><input type="checkbox" id="chk-filter-url" checked> URL</label>
-                        <label><input type="checkbox" id="chk-filter-user"> Username</label>
+                <div class="collapse navbar-collapse justify-content-end gap-2" id="navActions">
+                    <div class="d-flex flex-wrap gap-2 mt-3 mt-xl-0">
+                        <button id="btn-open-entry" class="btn btn-success btn-sm fw-bold"><i class="bi bi-plus-lg me-1"></i>Add Entry</button>
+                        <button id="btn-open-security" class="btn btn-outline-secondary btn-sm"><i class="bi bi-gear-fill me-1"></i>Rotation</button>
+                        <button id="btn-export" class="btn btn-outline-secondary btn-sm"><i class="bi bi-filetype-json me-1"></i>Export JSON</button>
+                        <button id="btn-export-csv" class="btn btn-outline-primary btn-sm"><i class="bi bi-filetype-csv me-1"></i>Export CSV</button>
+                        <button id="btn-import" class="btn btn-outline-secondary btn-sm"><i class="bi bi-box-arrow-in-down me-1"></i>Import JSON</button>
+                        <button id="btn-import-csv" class="btn btn-outline-success btn-sm"><i class="bi bi-box-arrow-in-down-left me-1"></i>Import CSV</button>
+                        
+                        <input type="file" id="import-file-input" class="d-none" accept=".json">
+                        <input type="file" id="import-csv-input" class="d-none" accept=".csv">
+                        
+                        <button id="btn-lock" class="btn btn-danger btn-sm fw-bold"><i class="bi bi-power me-1"></i>Sign Out</button>
                     </div>
-                    <div class="metrics-counter-badge" id="metrics-counter-display">Matches: <span id="count-matched">0</span> / Total: <span id="count-total">0</span></div>
                 </div>
-                <div class="search-bar-ui">
-                    <span style="color:#999;">🔍</span><input type="text" id="google-search-input" placeholder="Search components dynamically..." autocomplete="off">
-                    <button type="button" class="search-clear-btn" id="btn-clear-search">&times;</button>
-                    <div id="google-suggest-dropdown" class="google-suggest-dropdown"></div>
+            </div>
+        </nav>
+
+        <main class="container-xl py-4 flex-grow-1 d-flex flex-column gap-4">
+            <div class="card crypto-card border-0">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div class="d-flex gap-3 flex-wrap">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="chk-filter-site">
+                                <label class="form-check-label small fw-medium text-secondary" for="chk-filter-site">Site Name</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="chk-filter-url" checked>
+                                <label class="form-check-label small fw-medium text-secondary" for="chk-filter-url">URL</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="chk-filter-user">
+                                <label class="form-check-label small fw-medium text-secondary" for="chk-filter-user">Username</label>
+                            </div>
+                        </div>
+                        <span class="badge bg-light border border-secondary-subtle text-dark px-3 py-2 monospace" id="metrics-counter-display">
+                            Matches: <span id="count-matched" class="text-primary fw-bold">0</span> / Total: <span id="count-total" class="text-secondary">0</span>
+                        </span>
+                    </div>
+                    
+                    <div class="search-container">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-secondary-subtle text-muted"><i class="bi bi-search"></i></span>
+                            <input type="text" id="google-search-input" class="form-control form-control-lg fs-6" placeholder="Search operational metadata components dynamically..." autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="btn-clear-search"><i class="bi bi-x-lg"></i></button>
+                        </div>
+                        <div id="google-suggest-dropdown" class="google-suggest-dropdown"></div>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; width: 100%;">
-                <div class="grid-header-strip">
-                    <div>S.No.</div><div>Site Name</div><div>URL</div><div>Username</div><div>Password</div><div>PIN 1</div><div>PIN 2</div><div>PIN 3</div><div>Comments</div><div>Others</div><div style="text-align: right;">Actions</div>
+            <div class="d-flex flex-column flex-grow-1">
+                <h5 class="text-secondary fw-normal mb-3"><i class="bi bi-database-fill-check text-primary me-2"></i>Registry Records Datagrid</h5>
+                <div class="grid-header-strip p-3 align-items-center">
+                    <div>S.No.</div><div>Site Name</div><div>URL</div><div>Username</div><div>Password</div><div>PIN 1</div><div>PIN 2</div><div>PIN 3</div><div>Comments</div><div>Others</div><div class="text-end">Actions</div>
                 </div>
                 <div id="workspace-grid-rows" class="grid-rows-container"></div>
             </div>
@@ -336,124 +247,183 @@
     </div>
 </div>
 
-<div id="entry-modal-overlay" class="modal-overlay">
-    <div class="modal-box modal-wide">
-        <div class="modal-header">
-            <div class="modal-title">Registry Asset Node Entry</div>
-            <div class="modal-close-trigger" onclick="closeOverlayModal('entry-modal-overlay')">&times;</div>
+<!-- FORM OVERLAY MODAL -->
+<div class="modal fade" id="entryModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-white border border-secondary-subtle">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-normal"><i class="bi bi-hdd-network text-primary me-2"></i>Registry Asset Node Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="vault-form">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label small fw-bold text-secondary">Site Name</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="site-name" class="form-control" required autocomplete="off">
+                                <div class="field-suggest-box" id="suggest-site-name"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="form-label small fw-bold text-secondary">Destination URL</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="url" id="site-url" class="form-control" autocomplete="off" placeholder="https://">
+                                <div class="field-suggest-box" id="suggest-site-url"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="form-label small fw-bold text-secondary">Username</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="username" class="form-control" required autocomplete="off">
+                                <div class="field-suggest-box" id="suggest-username"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="form-label small fw-bold text-secondary">Password</label>
+                            <div class="input-group">
+                                <input type="text" id="password" class="form-control monospace" required autocomplete="off">
+                                <button type="button" class="btn btn-secondary px-3" id="btn-generate">Gen</button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 form-group">
+                            <label class="form-label small fw-bold text-secondary">PIN 1</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="pin-number" class="form-control" autocomplete="off">
+                                <div class="field-suggest-box" id="suggest-pin-number"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="form-label small fw-bold text-secondary">PIN 2</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="pin2" class="form-control" autocomplete="off">
+                                <div class="field-suggest-box" id="suggest-pin2"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="form-label small fw-bold text-secondary">PIN 3</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="pin3" class="form-control" autocomplete="off">
+                                <div class="field-suggest-box" id="suggest-pin3"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 form-group">
+                            <label class="form-label small fw-bold text-secondary">Comments</label>
+                            <textarea id="comments" class="form-control" style="height: 80px; resize: none;"></textarea>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label class="form-label small fw-bold text-secondary">Others</label>
+                            <textarea id="others" class="form-control" placeholder="Additional execution parameters..." style="height: 80px; resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Save Registry Node</button>
+                </div>
+            </form>
         </div>
-        <form id="vault-form">
-            <div class="form-grid-layout">
-                <div class="form-group">
-                    <label>Site Name</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="text" id="site-name" required autocomplete="off">
-                        <div class="field-suggest-box" id="suggest-site-name"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Destination URL</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="url" id="site-url" autocomplete="off" placeholder="https://">
-                        <div class="field-suggest-box" id="suggest-site-url"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="text" id="username" required autocomplete="off">
-                        <div class="field-suggest-box" id="suggest-username"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="pass-input-container">
-                        <input type="text" id="password" required autocomplete="off">
-                        <button type="button" class="gen-btn" id="btn-generate">Gen</button>
-                    </div>
-                </div>
-                
-                <div class="form-grid-triple">
-                    <div class="form-group">
-                        <label>PIN 1</label>
-                        <div class="autocomplete-wrapper">
-                            <input type="text" id="pin-number" autocomplete="off">
-                            <div class="field-suggest-box" id="suggest-pin-number"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>PIN 2</label>
-                        <div class="autocomplete-wrapper">
-                            <input type="text" id="pin2" autocomplete="off">
-                            <div class="field-suggest-box" id="suggest-pin2"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>PIN 3</label>
-                        <div class="autocomplete-wrapper">
-                            <input type="text" id="pin3" autocomplete="off">
-                            <div class="field-suggest-box" id="suggest-pin3"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group form-grid-full-width">
-                    <label>Comments</label>
-                    <textarea id="comments"></textarea>
-                </div>
-                
-                <div class="form-group form-grid-full-width">
-                    <label>Others</label>
-                    <textarea id="others" placeholder="Additional parameters..."></textarea>
-                </div>
-            </div>
-            <button type="submit" style="width: 100%; margin-top: 1.25rem; height: 42px;">Save Registry Node</button>
-        </form>
     </div>
 </div>
 
-<div id="security-modal-overlay" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <div class="modal-title">Administrative Key Rotation</div>
-            <div class="modal-close-trigger" onclick="closeOverlayModal('security-modal-overlay')">&times;</div>
+<!-- KEY ROTATION MODAL -->
+<div class="modal fade" id="securityModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white border border-secondary-subtle">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-normal"><i class="bi bi-shield-fill-exclamation text-warning me-2"></i>Administrative Key Rotation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="master-reset-form">
+                <div class="modal-body p-4">
+                    <div class="alert alert-warning border border-warning-subtle small mb-4 py-2">
+                        Modifying the operational master password key forces a complete client-side array architectural re-encryption stream.
+                    </div>
+                    <div class="mb-3">
+                        <label for="reset-old-pass" class="form-label small fw-bold text-secondary">Current Master Password</label>
+                        <input type="password" id="reset-old-pass" class="form-control" required>
+                    </div>
+                    <div class="mb-0">
+                        <label for="reset-new-pass" class="form-label small fw-bold text-secondary">New Replacement Master Password</label>
+                        <input type="password" id="reset-new-pass" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Dismiss</button>
+                    <button type="submit" class="btn btn-warning fw-bold text-dark">Execute System Re-Encryption</button>
+                </div>
+            </form>
         </div>
-        <form id="master-reset-form">
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.4;">
-                Modifying the operational master password key forces a complete client-side row array structural re-encryption stream.
-            </div>
-            <div class="form-group">
-                <label for="reset-old-pass">Current Master Password</label>
-                <input type="password" id="reset-old-pass" required>
-            </div>
-            <div class="form-group" style="margin-top: 0.85rem;">
-                <label for="reset-new-pass">New Replacement Master Password</label>
-                <input type="password" id="reset-new-pass" required>
-            </div>
-            <button type="submit" style="width: 100%; margin-top: 1.25rem; height: 40px;">Execute System Re-Encryption</button>
-        </form>
     </div>
 </div>
 
-<div id="view-modal-overlay" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header"><div class="modal-title">View Registry Item Mapping</div><div class="modal-close-trigger" onclick="closeOverlayModal('view-modal-overlay')">&times;</div></div>
-        <div class="modal-row"><div class="modal-label">Site Name</div><div class="modal-value" id="mv-site-name">—</div><button class="btn-copy-modal" id="mcb-site-name">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">URL</div><div class="modal-value" id="mv-url">—</div><button class="btn-copy-modal" id="mcb-url">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">Username</div><div class="modal-value" id="mv-username">—</div><button class="btn-copy-modal" id="mcb-username">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">Password</div><div class="modal-value" id="mv-password">—</div><button class="btn-copy-modal" id="mcb-password">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">PIN 1</div><div class="modal-value" id="mv-pin">—</div><button class="btn-copy-modal" id="mcb-pin">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">PIN 2</div><div class="modal-value" id="mv-pin2">—</div><button class="btn-copy-modal" id="mcb-pin2">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">PIN 3</div><div class="modal-value" id="mv-pin3">—</div><button class="btn-copy-modal" id="mcb-pin3">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">Comments</div><div class="modal-value" id="mv-comments" style="white-space: normal; max-height: 70px; overflow-y: auto;">—</div><button class="btn-copy-modal" id="mcb-comments">Copy</button></div>
-        <div class="modal-row"><div class="modal-label">Others</div><div class="modal-value" id="mv-others" style="white-space: normal; max-height: 70px; overflow-y: auto;">—</div><button class="btn-copy-modal" id="mcb-others">Copy</button></div>
+<!-- SYSTEM VIEW MODAL -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white border border-secondary-subtle">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-normal"><i class="bi bi-eye text-primary me-2"></i>View Registry Item Mapping</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-2 p-4">
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">Site Name</span><span id="mv-site-name" class="fw-bold text-primary d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-site-name">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">URL</span><span id="mv-url" class="monospace text-wrap d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-url">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">Username</span><span id="mv-username" class="d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-username">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">Password</span><span id="mv-password" class="monospace text-danger fw-bold d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-password">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">PIN 1</span><span id="mv-pin" class="monospace d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-pin">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">PIN 2</span><span id="mv-pin2" class="monospace d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-pin2">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">PIN 3</span><span id="mv-pin3" class="monospace d-block text-truncate">—</span></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0" id="mcb-pin3">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="w-100 min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">Comments</span><div id="mv-comments" class="text-wrap small text-dark overflow-y-auto" style="max-height:60px;">—</div></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0 align-self-start" id="mcb-comments">Copy</button>
+                </div>
+                <div class="p-2 bg-light border border-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                    <div class="w-100 min-w-0"><span class="d-block text-secondary small fw-bold text-uppercase">Others</span><div id="mv-others" class="text-wrap small text-dark overflow-y-auto" style="max-height:60px;">—</div></div>
+                    <button class="btn btn-sm btn-light border flex-shrink-0 align-self-start" id="mcb-others">Copy</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 const DB_NAME = "LockboxProCryptoDB", DB_VERSION = 1, STORE_NAME = "encrypted_vault";
 let db = null, derivedKey = null, activeSessionUser = "", activeSessionPass = "", localCacheRecords = [], uniqueRowFingerprints = new Set(), interfaceDebounceTimer = null;
 let activeSessionExportCounter = 1;
+
+let entryModal, securityModal, viewModal;
+
+window.addEventListener('DOMContentLoaded', () => {
+    entryModal = new bootstrap.Modal(document.getElementById('entryModal'));
+    securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+    viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+});
 
 async function initDB() {
     return new Promise((res) => {
@@ -479,11 +449,8 @@ async function encrypt(txt, k) {
 }
 async function decrypt(c, iv, k) { return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToBuf(iv) }, k, b64ToBuf(c))); }
 
-function openOverlayModal(modalId) { document.getElementById(modalId).classList.add('active'); }
-function closeOverlayModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-
-document.getElementById('btn-open-entry').addEventListener('click', () => { document.getElementById('vault-form').reset(); openOverlayModal('entry-modal-overlay'); });
-document.getElementById('btn-open-security').addEventListener('click', () => { document.getElementById('master-reset-form').reset(); openOverlayModal('security-modal-overlay'); });
+document.getElementById('btn-open-entry').addEventListener('click', () => { document.getElementById('vault-form').reset(); entryModal.show(); });
+document.getElementById('btn-open-security').addEventListener('click', () => { document.getElementById('master-reset-form').reset(); securityModal.show(); });
 
 document.getElementById('btn-generate').addEventListener('click', () => {
     const c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^*()", r = new Uint32Array(14);
@@ -501,8 +468,9 @@ document.getElementById('btn-unlock').addEventListener('click', async () => {
 
 function launchSystemCore() {
     document.getElementById('display-tenant').innerText = `Active User: ${activeSessionUser}`;
-    document.getElementById('auth-screen').classList.add('hidden');
-    document.getElementById('app-screen').classList.remove('hidden');
+    document.getElementById('auth-screen').classList.add('d-none');
+    document.getElementById('app-screen').classList.remove('d-none');
+    document.getElementById('app-screen').classList.add('d-flex');
     syncFetchAndRender();
 }
 
@@ -513,8 +481,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('master-reset-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const oldPass = document.getElementById('reset-old-pass').value;
-    const newPass = document.getElementById('reset-new-pass').value;
+    const oldPass = document.getElementById('reset-old-pass').value, newPass = document.getElementById('reset-new-pass').value;
     if (oldPass !== activeSessionPass) return alert("Current key authentication failed.");
     if (newPass.length < 4) return alert("Key length validation constraints failed.");
     if (!confirm("Are you sure you want to rotate your Master Password Configuration?")) return;
@@ -524,8 +491,7 @@ document.getElementById('master-reset-form').addEventListener('submit', async (e
         let updatedEncryptionPayloads = [];
         for (let i = 0; i < localCacheRecords.length; i++) {
             const clearRecordObj = { ...localCacheRecords[i] };
-            const databasePrimaryKeyID = clearRecordObj.id;
-            delete clearRecordObj.id;
+            const databasePrimaryKeyID = clearRecordObj.id; delete clearRecordObj.id;
             const freshlyEncryptedPack = await encrypt(JSON.stringify(clearRecordObj), targetNewKey);
             updatedEncryptionPayloads.push({
                 id: databasePrimaryKeyID,
@@ -534,13 +500,12 @@ document.getElementById('master-reset-form').addEventListener('submit', async (e
                 envelopeIv: freshlyEncryptedPack.iv
             });
         }
-        const trans = db.transaction(STORE_NAME, "readwrite");
-        const objectStoreRef = trans.objectStore(STORE_NAME);
+        const trans = db.transaction(STORE_NAME, "readwrite"), objectStoreRef = trans.objectStore(STORE_NAME);
         updatedEncryptionPayloads.forEach(reEncryptedRow => objectStoreRef.put(reEncryptedRow));
         trans.oncomplete = () => {
             derivedKey = targetNewKey; activeSessionPass = newPass;
             sessionStorage.setItem("sap_light_pass", newPass);
-            closeOverlayModal('security-modal-overlay');
+            securityModal.hide();
             alert("Administrative credential data arrays cleanly updated and re-encrypted.");
             syncFetchAndRender();
         };
@@ -592,7 +557,7 @@ document.getElementById('vault-form').addEventListener('submit', async (e) => {
     const env = await encrypt(JSON.stringify(payload), derivedKey);
     const tx = db.transaction(STORE_NAME, "readwrite");
     tx.objectStore(STORE_NAME).add({ metaTitle: payload.siteName.toLowerCase(), envelopeCipher: env.cipher, envelopeIv: env.iv });
-    tx.oncomplete = () => { closeOverlayModal('entry-modal-overlay'); syncFetchAndRender(); };
+    tx.oncomplete = () => { entryModal.hide(); syncFetchAndRender(); };
 });
 
 async function syncFetchAndRender() {
@@ -611,7 +576,7 @@ function executeLiveInterfaceRefresh() {
     const term = document.getElementById('google-search-input').value.toLowerCase().trim();
     const btn = document.getElementById('btn-clear-search');
     const cSite = document.getElementById('chk-filter-site').checked, cUrl = document.getElementById('chk-filter-url').checked, cUser = document.getElementById('chk-filter-user').checked;
-    btn.style.display = term.length > 0 ? "block" : "none";
+    btn.style.visibility = term.length > 0 ? "visible" : "hidden";
     let matches = [];
     if(term && (cSite || cUrl || cUser)) {
         for(let i=0; i<localCacheRecords.length; i++) {
@@ -627,23 +592,23 @@ function executeLiveInterfaceRefresh() {
 function renderGrid(list) {
     requestAnimationFrame(() => {
         const container = document.getElementById('workspace-grid-rows'); container.innerHTML = "";
-        if(list.length === 0) { container.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:2.5rem;font-size:0.85rem;border-top:1px solid var(--border-color)">No asset rows match modern processing filters.</p>`; return; }
+        if(list.length === 0) { container.innerHTML = `<p class="text-muted text-center py-5 small border-top border-secondary-subtle mb-0">No asset rows match modern processing filters.</p>`; return; }
         const chunk = list.slice(-120), f = document.createDocumentFragment();
         for(let i = chunk.length - 1; i >= 0; i--) {
             const r = chunk[i], idx = localCacheRecords.indexOf(r) + 1, row = document.createElement('div');
-            row.className = "grid-row-item";
+            row.className = "grid-row-item p-3 align-items-center small text-secondary";
             row.innerHTML = `
-                <div class="grid-cell"><span class="cell-label">S.No.</span><span style="font-weight:700;color:#999999;">${idx}</span></div>
-                <div class="grid-cell"><span class="cell-label">Site Name</span><strong style="color:var(--accent)">${esc(r.siteName)}</strong></div>
-                <div class="grid-cell"><span class="cell-label">URL</span><span>${r.siteUrl ? `<a href="${esc(r.siteUrl)}" target="_blank" style="color:var(--text-main);text-decoration:underline;">Link</a>` : '—'}</span></div>
-                <div class="grid-cell"><span class="cell-label">Username</span><span>${esc(r.username)}</span></div>
-                <div class="grid-cell"><span class="cell-label">Password</span><span style="color:#bbb;letter-spacing:1px">••••••••</span></div>
-                <div class="grid-cell"><span class="cell-label">PIN 1</span><span>${r.pin ? esc(r.pin) : '—'}</span></div>
-                <div class="grid-cell"><span class="cell-label">PIN 2</span><span>${r.pin2 ? esc(r.pin2) : '—'}</span></div>
-                <div class="grid-cell"><span class="cell-label">PIN 3</span><span>${r.pin3 ? esc(r.pin3) : '—'}</span></div>
-                <div class="grid-cell"><span class="cell-label">Comments</span><span style="color:#777;font-size:0.8rem;">${r.comments ? esc(r.comments) : '—'}</span></div>
-                <div class="grid-cell"><span class="cell-label">Others</span><span style="color:#777;font-size:0.8rem;">${r.others ? esc(r.others) : '—'}</span></div>
-                <div class="grid-action-cell"><button type="button" data-view-id="${r.id}">View</button><button type="button" data-dup-id="${r.id}">Clone</button></div>
+                <div class="grid-cell"><span class="cell-label">S.No.</span><span class="fw-bold opacity-70">${idx}</span></div>
+                <div class="grid-cell"><span class="cell-label">Site Name</span><strong class="text-primary">${esc(r.siteName)}</strong></div>
+                <div class="grid-cell"><span class="cell-label">URL</span><span>${r.siteUrl ? `<a href="${esc(r.siteUrl)}" target="_blank" class="text-primary text-decoration-underline">Link</a>` : '—'}</span></div>
+                <div class="grid-cell"><span class="cell-label">Username</span><span class="text-dark">${esc(r.username)}</span></div>
+                <div class="grid-cell"><span class="cell-label">Password</span><span class="text-muted opacity-50 monospace">••••••••</span></div>
+                <div class="grid-cell"><span class="cell-label">PIN 1</span><span class="monospace text-dark">${r.pin ? esc(r.pin) : '—'}</span></div>
+                <div class="grid-cell"><span class="cell-label">PIN 2</span><span class="monospace text-dark">${r.pin2 ? esc(r.pin2) : '—'}</span></div>
+                <div class="grid-cell"><span class="cell-label">PIN 3</span><span class="monospace text-dark">${r.pin3 ? esc(r.pin3) : '—'}</span></div>
+                <div class="grid-cell"><span class="cell-label">Comments</span><span class="text-muted text-truncate d-block">${r.comments ? esc(r.comments) : '—'}</span></div>
+                <div class="grid-cell"><span class="cell-label">Others</span><span class="text-muted text-truncate d-block">${r.others ? esc(r.others) : '—'}</span></div>
+                <div class="grid-cell grid-action-cell gap-1"><button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fs-7" data-view-id="${r.id}"><i class="bi bi-eye"></i></button><button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-7" data-dup-id="${r.id}"><i class="bi bi-copy"></i></button></div>
             `;
             f.appendChild(row);
         }
@@ -652,7 +617,8 @@ function renderGrid(list) {
 }
 
 document.getElementById('workspace-grid-rows').addEventListener('click', (e) => {
-    const v = e.target.getAttribute('data-view-id'), d = e.target.getAttribute('data-dup-id');
+    const btn = e.target.closest('button'); if(!btn) return;
+    const v = btn.getAttribute('data-view-id'), d = btn.getAttribute('data-dup-id');
     if(v) launchModal(parseInt(v, 10));
     if(d) { 
         const t = localCacheRecords.find(r => r.id === parseInt(d, 10)); 
@@ -664,14 +630,14 @@ document.getElementById('workspace-grid-rows').addEventListener('click', (e) => 
                     domEl.value = t[structuralKey] || '';
                 }
             }); 
-            openOverlayModal('entry-modal-overlay');
+            entryModal.show();
         } 
     }
 });
 
 document.getElementById('btn-clear-search').addEventListener('click', () => { const i = document.getElementById('google-search-input'); i.value=""; document.getElementById('google-suggest-dropdown').style.display="none"; executeLiveInterfaceRefresh(); i.focus(); });
 
-const overlay = document.getElementById('view-modal-overlay'); let activeModalRec = null;
+let activeModalRec = null;
 function launchModal(id) {
     const r = localCacheRecords.find(x => x.id === id); if(!r) return; activeModalRec = r;
     ['site-name','url','username','password','pin','pin2','pin3','comments','others'].forEach(f => {
@@ -681,23 +647,16 @@ function launchModal(id) {
             domEl.innerText = r[structuralKey] || '—';
         }
     });
-    document.querySelectorAll('#view-modal-overlay .btn-copy-modal').forEach(b => { b.innerText="Copy"; b.classList.remove("copied-success"); });
-    openOverlayModal('view-modal-overlay');
+    document.querySelectorAll('#viewModal .btn').forEach(b => { b.innerText="Copy"; b.className="btn btn-sm btn-light border"; });
+    viewModal.show();
 }
-overlay.addEventListener('click', (e) => { if(e.target === overlay) closeOverlayModal('view-modal-overlay'); });
 
-// FAIL-SAFE MOBILE COPY SYSTEM
 function setupCopyBtn(bId, f) {
     document.getElementById(bId).addEventListener('click', function() {
         if(!activeModalRec || !activeModalRec[f]) return;
         const textToCopy = activeModalRec[f];
-
         if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showCopySuccess(this);
-            }).catch(() => {
-                fallbackCopyEngine(textToCopy, this);
-            });
+            navigator.clipboard.writeText(textToCopy).then(() => showCopySuccess(this)).catch(() => fallbackCopyEngine(textToCopy, this));
         } else {
             fallbackCopyEngine(textToCopy, this);
         }
@@ -705,41 +664,16 @@ function setupCopyBtn(bId, f) {
 }
 
 function fallbackCopyEngine(text, buttonElement) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    
-    // Prevent screen scrolling on mobile initialization
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-    textArea.style.visibility = "hidden";
-    
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    textArea.setSelectionRange(0, 99999); // Mobile selection scope force
-
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showCopySuccess(buttonElement);
-        } else {
-            alert("Unable to copy asset.");
-        }
-    } catch (err) {
-        alert("Mobile clipboard permissions rejected.");
-    }
-
+    const textArea = document.createElement("textarea"); textArea.value = text;
+    textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; textArea.style.visibility = "hidden";
+    document.body.appendChild(textArea); textArea.focus(); textArea.select();
+    try { if (document.execCommand('copy')) showCopySuccess(buttonElement); } catch (err) { alert("Clipboard execution denied."); }
     document.body.removeChild(textArea);
 }
 
 function showCopySuccess(el) {
-    el.innerText = "✓";
-    el.classList.add("copied-success");
-    setTimeout(() => {
-        el.innerText = "Copy";
-        el.classList.remove("copied-success");
-    }, 1000);
+    el.innerText = "✓"; el.className = "btn btn-sm btn-success";
+    setTimeout(() => { el.innerText = "Copy"; el.className = "btn btn-sm btn-light border"; }, 1000);
 }
 
 setupCopyBtn('mcb-site-name','siteName'); setupCopyBtn('mcb-url','siteUrl'); setupCopyBtn('mcb-username','username'); setupCopyBtn('mcb-password','password'); setupCopyBtn('mcb-pin','pin'); setupCopyBtn('mcb-pin2','pin2'); setupCopyBtn('mcb-pin3','pin3'); setupCopyBtn('mcb-comments','comments'); setupCopyBtn('mcb-others','others');
@@ -762,54 +696,35 @@ function buildSuggestions() {
     if(count > 0) { gDropdown.style.display="block"; gDropdown.appendChild(f); } else gDropdown.style.display="none";
 }
 function createSugNode(v, t) {
-    const d = document.createElement('div'); d.className = "google-suggest-item"; d.innerHTML = `<span>${esc(v)}</span><span class="suggest-tag">${t}</span>`;
+    const d = document.createElement('div'); d.className = "google-suggest-item d-flex justify-content-between align-items-center"; 
+    d.innerHTML = `<span class="text-truncate" style="max-width: 85%;">${esc(v)}</span><span class="badge bg-light border text-secondary fs-8">${t}</span>`;
     d.addEventListener('click', (e) => { e.stopPropagation(); gInput.value = v; gDropdown.style.display="none"; executeLiveInterfaceRefresh(); }); return d;
 }
 document.addEventListener('click', (e) => { if(!e.target.closest('.search-container')) gDropdown.style.display="none"; });
 
-// AUTO-INCREMENTING BACKUP SYSTEM (JSON)
 document.getElementById('btn-export').addEventListener('click', () => {
     db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME).getAll().onsuccess = (e) => {
         const arr = e.target.result; if(arr.length === 0) return alert("Repository empty.");
         const formattedSerialNumber = String(activeSessionExportCounter).padStart(4, '0');
-        const finalExportFilename = `Password Manager 06 Jul 2026 - ${formattedSerialNumber}.json`;
+        const finalExportFilename = `Password Manager 11 Jul 2026 - ${formattedSerialNumber}.json`;
         const blobInstance = new Blob([JSON.stringify(arr)], { type: "application/json" });
         const triggerAnchor = document.createElement('a');
-        triggerAnchor.href = URL.createObjectURL(blobInstance);
-        triggerAnchor.download = finalExportFilename;
-        triggerAnchor.click();
+        triggerAnchor.href = URL.createObjectURL(blobInstance); triggerAnchor.download = finalExportFilename; triggerAnchor.click();
         activeSessionExportCounter++;
     };
 });
 
-// HIGH-PERFORMANCE DECRYPTED CSV EXPORT SYSTEM Engine
 document.getElementById('btn-export-csv').addEventListener('click', () => {
     if (localCacheRecords.length === 0) return alert("Repository empty. Nothing to export to CSV.");
-    
     const headers = ["Site Name", "Site URL", "Username", "Password", "PIN 1", "PIN 2", "PIN 3", "Comments", "Others"];
     let csvContent = headers.map(h => `"${h.replace(/"/g, '""')}"`).join(",") + "\r\n";
-    
     for (let i = 0; i < localCacheRecords.length; i++) {
         const rec = localCacheRecords[i];
-        const rowData = [
-            rec.siteName || '',
-            rec.siteUrl || '',
-            rec.username || '',
-            rec.password || '',
-            rec.pin || '',
-            rec.pin2 || '',
-            rec.pin3 || '',
-            rec.comments || '',
-            rec.others || ''
-        ];
+        const rowData = [rec.siteName || '', rec.siteUrl || '', rec.username || '', rec.password || '', rec.pin || '', rec.pin2 || '', rec.pin3 || '', rec.comments || '', rec.others || ''];
         csvContent += rowData.map(val => `"${val.toString().replace(/"/g, '""')}"`).join(",") + "\r\n";
     }
-    
     const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `Decrypted_Vault_Export_${new Date().toISOString().slice(0,10)}.csv`;
-    link.click();
+    const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Decrypted_Vault_Export_${new Date().toISOString().slice(0,10)}.csv`; link.click();
 });
 
 document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-file-input').click());
@@ -905,8 +820,8 @@ document.getElementById('btn-lock').addEventListener('click', () => {
     derivedKey = null; activeSessionUser = ""; activeSessionPass = ""; localCacheRecords = []; uniqueRowFingerprints.clear(); sessionStorage.clear();
     document.getElementById('master-password').value = ""; gInput.value = ""; document.getElementById('workspace-grid-rows').innerHTML = "";
     document.getElementById('vault-form').reset(); document.getElementById('master-reset-form').reset();
-    closeOverlayModal('entry-modal-overlay'); closeOverlayModal('security-modal-overlay'); closeOverlayModal('view-modal-overlay');
-    document.getElementById('app-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden');
+    entryModal.hide(); securityModal.hide(); viewModal.hide();
+    document.getElementById('app-screen').classList.remove('d-flex'); document.getElementById('app-screen').classList.add('d-none'); document.getElementById('auth-screen').classList.remove('d-none');
 });
 function esc(s) { if(!s) return ''; return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 </script>

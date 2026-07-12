@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Overtime Workspace Ledger</title>
+    <title>METSIS OTB - Overtime Workspace Ledger</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     
@@ -15,554 +17,741 @@
 
     <style>
         :root {
-            --bg-canvas: #f4f6f9;
-            --surface-card: #ffffff;
-            --border-color: #e2e8f0;
-            --primary-accent: #4f46e5;
-            --primary-hover: #4338ca;
-            --success-accent: #10b981;
-            --danger-accent: #ef4444;
-            --text-main: #0f172a;
-            --text-secondary: #64748b;
-            --radius-standard: 8px;
+            --ynex-body-bg: #f0f3f7;
+            --ynex-menu-bg: #ffffff;
+            --ynex-header-bg: #ffffff;
+            --ynex-card-bg: #ffffff;
+            --ynex-border: #f3f3f3;
+            
+            --ynex-primary: #5c67f7;
+            --ynex-primary-transparent: rgba(92, 103, 247, 0.1);
+            --ynex-success: #26c026;
+            --ynex-danger: #e6533c;
+            --ynex-warning: #fbb225;
+            --ynex-info: #00b9ff;
+            
+            --ynex-text-primary: #333335;
+            --ynex-text-secondary: #6c757d;
+            --ynex-text-muted: #8c90a6;
+            
+            --ynex-sidebar-width: 240px;
+            --ynex-header-height: 60px;
         }
 
         body { 
-            background-color: var(--bg-canvas);
-            color: var(--text-main);
+            background-color: var(--ynex-body-bg);
+            color: var(--ynex-text-primary);
             min-height: 100vh;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .geometric-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-standard);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        
-        .stat-card-blue {
-            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
-            border: 1px solid #bae6fd;
-        }
-        .stat-card-green {
-            background: linear-gradient(135deg, #f8fafc 0%, #dcfce7 100%);
-            border: 1px solid #bbf7d0;
-        }
-
-        .btn-modern {
-            font-weight: 600;
-            border-radius: var(--radius-standard) !important;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            transition: all 0.15s ease;
-        }
-        .btn-modern-primary {
-            background-color: var(--primary-accent);
-            color: #ffffff;
-            border: none;
-        }
-        .btn-modern-primary:hover {
-            background-color: var(--primary-hover);
-        }
-        .btn-modern-outline {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-        .btn-modern-outline:hover {
-            background: #f8fafc;
-            color: var(--text-main);
-        }
-
-        .action-btn {
-            padding: 6px 12px;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: 0.85rem;
-            border-radius: var(--radius-standard);
-            border: 1px solid var(--border-color);
-            background: #ffffff;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.15s ease;
-        }
-        .action-btn-edit {
-            color: var(--primary-accent);
-        }
-        .action-btn-edit:hover {
-            background: #e0e7ff;
-            border-color: #c7d2fe;
-        }
-        .action-btn-delete {
-            color: var(--danger-accent);
-        }
-        .action-btn-delete:hover {
-            background: #fee2e2;
-            border-color: #fca5a5;
+            overflow-x: hidden;
         }
 
-        @media (max-width: 576px) {
-            .action-btn {
-                padding: 6px 8px;
-            }
-            .action-btn span {
+        /* Fixed Sidebar Architecture Layout */
+        .ynex-sidebar {
+            width: var(--ynex-sidebar-width);
+            height: 100vh;
+            background: var(--ynex-menu-bg);
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1040;
+            border-right: 1px solid var(--ynex-border);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        .ynex-brand {
+            height: var(--ynex-header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--ynex-border);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--ynex-primary);
+            letter-spacing: 0.5px;
+        }
+        .ynex-menu {
+            padding: 15px 0;
+            list-style: none;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .ynex-menu-category {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--ynex-text-muted);
+            padding: 10px 24px 5px 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ynex-menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px;
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            gap: 12px;
+        }
+        .ynex-menu-item.active a, .ynex-menu-item a:hover {
+            color: var(--ynex-primary);
+            background: var(--ynex-primary-transparent);
+        }
+
+        /* Responsive Top Header System */
+        .ynex-header {
+            height: var(--ynex-header-height);
+            background: var(--ynex-header-bg);
+            position: fixed;
+            top: 0; right: 0; left: var(--ynex-sidebar-width);
+            z-index: 1020;
+            border-bottom: 1px solid var(--ynex-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            transition: left 0.3s ease;
+        }
+
+        .ynex-main-content {
+            margin-top: var(--ynex-header-height);
+            margin-left: var(--ynex-sidebar-width);
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive Breakpoint Drawer Rules */
+        @media(max-width: 991.98px) {
+            .ynex-sidebar { transform: translateX(-100%); }
+            .ynex-sidebar.open { transform: translateX(0); }
+            .ynex-header { left: 0; }
+            .ynex-main-content { margin-left: 0; padding: 16px; }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(0,0,0,0.4);
+                z-index: 1035;
                 display: none;
             }
+            .sidebar-overlay.show { display: block; }
         }
 
-        .custom-backdrop {
+        /* Premium Cards Design Layout Modules */
+        .card.ynex-card {
+            background-color: var(--ynex-card-bg);
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
+            margin-bottom: 24px;
+        }
+        .ynex-card .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--ynex-border);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .ynex-card .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ynex-text-primary);
+            margin: 0;
+        }
+        .ynex-card .card-body { padding: 20px; }
+
+        /* Typography Control Interface Buttons */
+        .ynex-btn {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ynex-btn-primary { background-color: var(--ynex-primary); color: #fff; border: 1px solid var(--ynex-primary); }
+        .ynex-btn-primary:hover { background-color: #4b54e0; color: #fff; }
+        .ynex-btn-outline { border: 1px solid #dcdcdc; color: var(--ynex-text-secondary); background: transparent; }
+        .ynex-btn-outline:hover { background: #f5f6f7; color: var(--ynex-text-primary); }
+        .ynex-btn-danger-light { background-color: rgba(230,83,60,0.1); color: var(--ynex-danger); border: 0; }
+        .ynex-btn-danger-light:hover { background-color: var(--ynex-danger); color: #fff; }
+
+        .ynex-input {
+            border: 1px solid var(--ynex-border);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--ynex-text-primary);
+            background-color: #fff;
+        }
+        .ynex-input:focus {
+            border-color: var(--ynex-primary);
+            box-shadow: 0 0 0 2px var(--ynex-primary-transparent);
+            outline: 0;
+        }
+
+        /* Avatar Element Containers */
+        .avatar-circle {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .avatar-primary { background: rgba(92,103,247,0.1); color: var(--ynex-primary); }
+        .avatar-success { background: rgba(38,192,38,0.1); color: var(--ynex-success); }
+        .avatar-warning { background: rgba(251,178,37,0.1); color: var(--ynex-warning); }
+        .avatar-danger { background: rgba(230,83,60,0.1); color: var(--ynex-danger); }
+
+        /* Responsive Core Grid Tables */
+        .table-ynex { margin: 0; width: 100%; }
+        .table-ynex th {
+            background-color: #f9fafb;
+            color: var(--ynex-text-primary);
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--ynex-border);
+            white-space: nowrap;
+        }
+        .table-ynex td {
+            padding: 12px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--ynex-border);
+            color: var(--ynex-text-secondary);
+            white-space: nowrap;
+        }
+        .table-ynex tbody tr:last-child td { border-bottom: 0; }
+
+        /* Dialog Floating Overlay Layers Architecture */
+        .glass-backdrop {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1060;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            background: rgba(0, 0, 0, 0.4);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1060; opacity: 0; transition: opacity 0.2s ease;
         }
-        .custom-backdrop.show {
-            display: flex;
-            opacity: 1;
+        .glass-backdrop.show { display: flex; opacity: 1; }
+        .modal-pane {
+            background: #fff; border-radius: 8px; width: 92%; max-width: 520px;
+            padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .modal-surface {
-            background: #ffffff;
-            border-radius: var(--radius-standard);
-            width: 92%;
-            max-width: 520px;
-            padding: 28px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        .modal-surface-lg {
-            max-width: 700px;
-        }
-
-        .form-control-modern, .form-select-modern {
-            border-radius: var(--radius-standard) !important;
-            border: 1px solid var(--border-color);
-            padding: 10px 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            background-color: #f8fafc;
-        }
-        .form-control-modern:focus, .form-select-modern:focus {
-            background-color: #ffffff;
-            border-color: var(--primary-accent);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-            outline: none;
-        }
-
-        .table-responsive-clean {
-            border-radius: var(--radius-standard);
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
-        }
-        .table-clean th {
-            background-color: #f8fafc;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            padding: 14px;
-            white-space: nowrap;
-        }
-        .table-clean td {
-            padding: 14px;
-            vertical-align: middle;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--border-color);
-            white-space: nowrap;
-        }
-        
-        .profile-strip {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--primary-accent);
-            border-radius: var(--radius-standard);
-        }
+        .modal-pane-lg { max-width: 760px; }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4 mb-5 pb-4 border-bottom">
-        <div>
-            <span class="badge bg-white text-primary border border-primary-subtle px-3 py-1.5 rounded-1 fw-bold mb-2 shadow-sm">
-                <i class="bi bi-cpu me-1"></i> Core Version 6.7 Matrix
-            </span>
-            <h1 class="fw-bold tracking-tight text-dark m-0">
-                Workspace Overtime Ledger
-            </h1>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <input type="file" id="importFile" accept=".json,.csv" class="d-none">
-            <button class="btn btn-modern btn-modern-outline shadow-sm" onclick="document.getElementById('importFile').click()">
-                <i class="bi bi-folder-symlink me-2"></i>Import Backup (.csv)
-            </button>
-            <button id="exportCsv" class="btn btn-modern btn-modern-outline shadow-sm">
-                <i class="bi bi-filetype-csv me-2"></i>Export Backup (.csv)
-            </button>
-        </div>
-    </div>
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlayNode" onclick="toggleSidebarMenu(false)"></div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-xl-5">
-            <div class="card geometric-card p-4 h-100 d-flex flex-column justify-content-between">
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold m-0 text-dark"><i class="bi bi-shield-check text-primary me-2"></i>Identity Profile</h5>
-                        <button class="btn btn-sm btn-modern-primary btn-modern px-3 py-2" onclick="launchProfileModal()">
-                            <i class="bi bi-person-gear me-1"></i> Employee Information
-                        </button>
+<!-- Fixed Responsive Sidebar Navigation Drawer -->
+<div class="ynex-sidebar" id="sidebarNode">
+    <div class="ynex-brand">
+        <span><i class="bi bi-layers-half me-2"></i>METSIS OTB</span>
+        <button class="btn btn-sm text-muted d-lg-none p-0" onclick="toggleSidebarMenu(false)"><i class="bi bi-x-lg fs-5"></i></button>
+    </div>
+    <ul class="ynex-menu">
+        <li class="ynex-menu-category">Main Console</li>
+        <li class="ynex-menu-item active">
+            <a href="#" onclick="toggleSidebarMenu(false); scrollToSection('mainLedgerDashboard');"><i class="bi bi-grid-1x2"></i>Dashboard</a>
+        </li>
+        <li class="ynex-menu-item">
+            <a href="#" onclick="toggleSidebarMenu(false); launchProfileModal();"><i class="bi bi-person-gear"></i>Employee Info</a>
+        </li>
+        
+        <li class="ynex-menu-category">Report Engines</li>
+        <li class="ynex-menu-item">
+            <a href="#" onclick="toggleSidebarMenu(false); openReportPreviewModal('monthly');"><i class="bi bi-file-earmark-spreadsheet"></i>Monthly Report</a>
+        </li>
+        <li class="ynex-menu-item">
+            <a href="#" onclick="toggleSidebarMenu(false); openReportPreviewModal('yearly');"><i class="bi bi-calendar-check"></i>Annual Report</a>
+        </li>
+        <li class="ynex-menu-item">
+            <a href="#" onclick="toggleSidebarMenu(false); scrollToSection('historicalLogsLedgerSection');"><i class="bi bi-clock-history"></i>Historical Ledger</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Header Controls Panel Section -->
+<div class="ynex-header">
+    <div class="d-flex align-items-center gap-2">
+        <button class="ynex-btn ynex-btn-outline d-lg-none" onclick="toggleSidebarMenu(true)">
+            <i class="bi bi-list m-0"></i>
+        </button>
+        <span class="fw-semibold text-muted d-none d-sm-inline">METSIS OTB</span>
+    </div>
+    <div class="d-flex gap-2">
+        <input type="file" id="importFile" accept=".csv" class="d-none">
+        <button class="ynex-btn ynex-btn-outline px-2 px-sm-3" onclick="document.getElementById('importFile').click()">
+            <i class="bi bi-upload"></i><span class="d-none d-md-inline">Import ID CSV</span>
+        </button>
+        <button id="exportCsv" class="ynex-btn ynex-btn-primary px-2 px-sm-3">
+            <i class="bi bi-download"></i><span class="d-none d-md-inline">Export ID Wise CSV</span>
+        </button>
+    </div>
+</div>
+
+<!-- Main Core Content Container Grid -->
+<div class="ynex-main-content" id="mainLedgerDashboard">
+    <div class="container-fluid p-0">
+        
+        <!-- Header Profile Metric Strip -->
+        <div class="card ynex-card">
+            <div class="card-body py-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-sm-7">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-circle avatar-primary"><i class="bi bi-person-badge"></i></div>
+                            <div>
+                                <h6 class="m-0 fw-bold" id="lblDisplayEmpName">Loading Account...</h6>
+                                <span class="text-muted small">ID: <strong id="lblDisplayEmpId" class="text-dark">—</strong></span>
+                                <span class="text-muted small px-1">|</span>
+                                <span class="text-muted small" id="lblDisplayDesignation">—</span> 
+                                <span class="text-muted small px-1">|</span> 
+                                <span class="text-muted small" id="lblDisplayDepartment">—</span>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div id="profileBadgeContainer" class="p-3 profile-strip mb-4">
-                        <div class="row g-2">
+                    <div class="col-sm-5 text-sm-end">
+                        <small class="text-muted d-block mb-1">Overtime Rate (Per Hour)</small>
+                        <strong class="fs-5 text-primary" id="displayRate">0.00 BDT</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logging Parameters Processing Components -->
+        <div class="row g-3">
+            <div class="col-xl-8">
+                <div class="card ynex-card h-100 mb-0">
+                    <div class="card-header"><h3 class="card-title">Overtime Execution Space</h3></div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold">Overtime Date</label>
+                                <div class="input-group">
+                                    <button class="btn ynex-btn-outline px-3" id="btnPrevDate"><i class="bi bi-chevron-left"></i></button>
+                                    <input type="text" id="logDateDisplay" class="form-control ynex-input text-center fw-bold" readonly style="background:#fff !important;">
+                                    <button class="btn ynex-btn-outline px-3" id="btnNextDate"><i class="bi bi-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="manualHours" class="form-label text-muted small fw-semibold">OT Duration</label>
+                                <input type="number" id="manualHours" class="form-control ynex-input text-center fw-bold text-primary" step="0.1" value="5.5">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button id="btnLogData" class="ynex-btn ynex-btn-primary w-100 py-2 justify-content-center"><i class="bi bi-plus-circle"></i>Commit Log</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4">
+                <div class="card ynex-card h-100 mb-0">
+                    <div class="card-body d-flex align-items-center justify-content-between py-4">
+                        <div>
+                            <span class="text-muted d-block mb-1 small fw-semibold">AUTOMATED SHIFT PATTERN</span>
+                            <h4 class="fw-bold m-0" id="displayScheduleMode">Weekday</h4>
+                        </div>
+                        <div class="avatar-circle avatar-warning"><i class="bi bi-clock-history"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-2"></div>
+
+        <!-- Metric Insights Layout Blocks -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card ynex-card mb-0">
+                    <div class="card-header">
+                        <h3 class="card-title" id="monthlyTitle">Current Month</h3>
+                        <button class="ynex-btn ynex-btn-outline btn-sm" onclick="openReportPreviewModal('monthly')">Invoice View</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 border-end" style="border-color: var(--ynex-border) !important;">
+                                <span class="text-muted small d-block mb-1">Tracked Scale</span>
+                                <h4 class="fw-bold text-dark" id="monthlyHours">0.0 hrs</h4>
+                            </div>
                             <div class="col-6">
-                                <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 0.03em;">EMPLOYEE ID</small>
-                                <span id="lblDisplayEmpId" class="fw-bold text-dark">—</span>
+                                <span class="text-muted small d-block mb-1">Net Earnings</span>
+                                <h4 class="fw-bold text-primary" id="monthlyEarnings">0.00 BDT</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card ynex-card mb-0">
+                    <div class="card-header">
+                        <h3 class="card-title" id="yearlyTitle">Annual Consolidation</h3>
+                        <button class="ynex-btn ynex-btn-outline btn-sm" onclick="openReportPreviewModal('yearly')">Framework View</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 border-end" style="border-color: var(--ynex-border) !important;">
+                                <span class="text-muted small d-block mb-1">Tracked Scale</span>
+                                <h4 class="fw-bold text-dark" id="yearlyHours">0.0 hrs</h4>
                             </div>
                             <div class="col-6">
-                                <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 0.03em;">FULL NAME</small>
-                                <span id="lblDisplayEmpName" class="fw-bold text-dark">Unconfigured Record</span>
+                                <span class="text-muted small d-block mb-1">Net Earnings</span>
+                                <h4 class="fw-bold text-success" id="yearlyEarnings">0.00 BDT</h4>
                             </div>
-                            <div class="col-6 mt-2">
-                                <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 0.03em;">DESIGNATION</small>
-                                <span id="lblDisplayDesignation" class="small fw-semibold text-secondary">—</span>
-                            </div>
-                            <div class="col-6 mt-2">
-                                <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 0.03em;">DEPARTMENT</small>
-                                <span id="lblDisplayDepartment" class="small fw-semibold text-secondary">—</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-6">
-                        <div class="p-3 bg-light border text-center rounded-2">
-                            <span class="small text-secondary d-block fw-semibold mb-1" style="font-size: 0.7rem;">LOGGING RATE</span>
-                            <span class="fs-5 fw-bold text-dark" id="displayRate">250.00 BDT</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 bg-light border text-center rounded-2">
-                            <span class="small text-secondary d-block fw-semibold mb-1" style="font-size: 0.7rem;">AUTO SCHEDULE</span>
-                            <span class="fs-5 fw-bold text-primary" id="displayScheduleMode">Weekday</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-7">
-            <div class="card geometric-card p-4 h-100 justify-content-center">
-                <h5 class="fw-bold text-dark mb-4"><i class="bi bi-plus-square text-success me-2"></i>Intake Data Ledger</h5>
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-6">
-                        <label class="form-label small text-secondary fw-bold">Calendar Track Date</label>
-                        <div class="input-group">
-                            <button class="btn btn-outline-secondary border-end-0 px-3" type="button" id="btnPrevDate" style="border-radius: 8px 0 0 8px;"><i class="bi bi-chevron-left"></i></button>
-                            <input type="text" id="logDateDisplay" class="form-control form-control-modern border-start-0 border-end-0 text-center fw-bold bg-white text-dark py-2" readonly style="cursor: default; border-radius:0 !important;">
-                            <button class="btn btn-outline-secondary border-start-0 px-3" type="button" id="btnNextDate" style="border-radius: 0 8px 8px 0;"><i class="bi bi-chevron-right"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="manualHours" class="form-label small text-secondary fw-bold">Overtime Hours</label>
-                        <input type="number" id="manualHours" class="form-control form-control-modern text-center fw-bold text-primary py-2" step="0.1" min="0" value="5.5">
-                    </div>
-                    <div class="col-md-3">
-                        <button id="btnLogData" class="btn btn-modern-primary btn-modern w-100 py-2.5"><i class="bi bi-database-fill-add me-2"></i>Log Entry</button>
-                    </div>
-                </div>
+        <div class="py-2"></div>
+
+        <!-- Dataset Summary Historical Logs Table Panel Layout -->
+        <div class="card ynex-card" id="historicalLogsLedgerSection">
+            <div class="card-header">
+                <h3 class="card-title">Ledger Historical Logs Framework</h3>
+                <button onclick="launchCustomConfirmModal('ALL_RECORDS', 'Are you absolutely sure you want to completely wipe out and reset the entire historical logs ledger dataset configuration metrics baseline portfolio array?')" class="ynex-btn ynex-btn-danger-light btn-sm"><i class="bi bi-trash3"></i>Clear Dataset</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-ynex align-middle">
+                    <thead>
+                        <tr>
+                            <th>Calendar Date</th>
+                            <th>Day Category</th>
+                            <th>Tracked Duration</th>
+                            <th>Applied Rate</th>
+                            <th>Gross Allocation</th>
+                            <th class="text-center" style="width: 120px;">Control Systems</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody"></tbody>
+                </table>
             </div>
         </div>
+
     </div>
+</div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card geometric-card stat-card-blue p-4 h-100 d-flex flex-column justify-content-between">
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase text-secondary small fw-bold tracking-wider">Active Month Workspace</span>
-                        <i class="bi bi-calendar4-week text-primary fs-5"></i>
-                    </div>
-                    <h3 id="monthlyTitle" class="fw-bold text-dark mb-4">...</h3>
-                    <div class="row g-2 mb-4">
-                        <div class="col-6 border-end border-2">
-                            <small class="text-secondary d-block">Hours Accumulated</small>
-                            <span id="monthlyHours" class="fs-4 fw-bold text-dark">0.0 hrs</span>
-                        </div>
-                        <div class="col-6 ps-3">
-                            <small class="text-secondary d-block">Calculated Net Yield</small>
-                            <span id="monthlyEarnings" class="fs-4 fw-bold text-primary">0.00 BDT</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-modern btn-modern-primary w-100 py-2.5" onclick="openReportPreviewModal('monthly')">
-                    <i class="bi bi-file-earmark-pdf me-2"></i>Review Monthly Statements
-                </button>
+<!-- Premium Custom Popup Alert/Notification Modal Module -->
+<div class="glass-backdrop" id="customAlertModal">
+    <div class="modal-pane" style="max-width: 420px;">
+        <div class="text-center py-2">
+            <div id="alertModalIconContainer" class="avatar-circle mx-auto mb-3" style="width:56px; height:56px; font-size:1.8rem;">
+                <i id="alertModalIcon" class="bi bi-info-circle"></i>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card geometric-card stat-card-green p-4 h-100 d-flex flex-column justify-content-between">
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase text-secondary small fw-bold tracking-wider">Active Year Framework</span>
-                        <i class="bi bi-graph-up-arrow text-success fs-5"></i>
-                    </div>
-                    <h3 id="yearlyTitle" class="fw-bold text-dark mb-4">...</h3>
-                    <div class="row g-2 mb-4">
-                        <div class="col-6 border-end border-2">
-                            <small class="text-secondary d-block">Hours Accumulated</small>
-                            <span id="yearlyHours" class="fs-4 fw-bold text-dark">0.0 hrs</span>
-                        </div>
-                        <div class="col-6 ps-3">
-                            <small class="text-secondary d-block">Calculated Net Yield</small>
-                            <span id="yearlyEarnings" class="fs-4 fw-bold text-success">0.00 BDT</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-modern btn-modern-primary w-100 py-2.5 bg-success border-0" onclick="openReportPreviewModal('yearly')">
-                    <i class="bi bi-journal-check me-2"></i>Review Yearly Statements
-                </button>
+            <h5 class="fw-bold text-dark mb-2" id="alertModalTitle">Notification</h5>
+            <p class="text-muted small px-2 mb-4" id="alertModalDescriptionText">Dynamic customized feedback context layout description message frame.</p>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="ynex-btn ynex-btn-primary px-5" onclick="closePopupModal('customAlertModal')">Acknowledge</button>
             </div>
-        </div>
-    </div>
-
-    <div class="card geometric-card p-4">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
-            <h5 class="fw-bold text-dark m-0"><i class="bi bi-layers text-secondary me-2"></i>Historical Log History</h5>
-            <button id="clearData" class="btn btn-sm btn-modern-outline btn-modern text-danger border-danger-subtle px-3 py-1.5">Purge All Track Matrix</button>
-        </div>
-        <div class="table-responsive-clean">
-            <table class="table table-clean table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Calendar Frame</th>
-                        <th>Day Mode</th>
-                        <th>Duration Count</th>
-                        <th>Applied Rate</th>
-                        <th>Gross Yield Pay</th>
-                        <th class="text-center" style="width: 160px; min-width: 140px;">Command Options</th>
-                    </tr>
-                </thead>
-                <tbody id="logsTableBody">
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
 
-<div class="custom-backdrop" id="customEditModal">
-    <div class="modal-surface">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold text-dark m-0"><i class="bi bi-pencil-square text-primary me-2"></i>Modify Entry Value Matrix</h5>
-            <button type="button" class="btn-close" onclick="closePopupModal('customEditModal')"></button>
+<!-- Premium Customized Confirmation Modal Box -->
+<div class="glass-backdrop" id="customConfirmModal">
+    <div class="modal-pane" style="max-width: 440px;">
+        <div class="text-center py-2">
+            <div class="avatar-circle avatar-warning mx-auto mb-3" style="width:56px; height:56px; font-size:1.8rem;"><i class="bi bi-exclamation-triangle"></i></div>
+            <h5 class="fw-bold text-dark mb-2">Destructive Confirmation Action</h5>
+            <p class="text-muted small px-2 mb-4" id="confirmModalDescriptionText">Are you sure you want to alter the dataset configuration parameters mapping rows state?</p>
+            <div class="d-flex justify-content-center gap-2">
+                <button type="button" class="ynex-btn ynex-btn-outline px-4" onclick="closePopupModal('customConfirmModal')">Cancel</button>
+                <button type="button" id="btnExecuteConfirmedAction" class="ynex-btn text-white px-4" style="background-color: var(--ynex-danger);">Confirm Execution</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Modal Entry Editing Panel -->
+<div class="glass-backdrop" id="customEditModal">
+    <div class="modal-pane">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--ynex-border) !important;">
+            <h6 class="fw-bold m-0"><i class="bi bi-pencil-square text-primary me-2"></i>Modify Entry Parameters</h6>
+            <button type="button" class="btn-close" onclick="closePopupModal('customEditModal')" style="font-size:0.75rem;"></button>
         </div>
         <input type="hidden" id="editTargetUid">
         <div class="mb-3">
-            <label class="form-label text-secondary small fw-bold">Selected Target Date</label>
-            <input type="text" id="editDisplayDate" class="form-control form-control-modern fw-bold text-muted" readonly disabled style="opacity: 0.7;">
+            <label class="form-label text-muted small fw-semibold">Target Entry Date</label>
+            <input type="text" id="editDisplayDate" class="form-control ynex-input w-100 text-muted" readonly disabled>
         </div>
         <div class="row g-3 mb-4">
             <div class="col-6">
-                <label for="editHours" class="form-label text-secondary small fw-bold">Logged OT Hours</label>
-                <input type="number" id="editHours" class="form-control form-control-modern fw-bold" step="0.1" min="0">
+                <label for="editHours" class="form-label text-muted small fw-semibold">Tracked Hours</label>
+                <input type="number" id="editHours" class="form-control ynex-input w-100 text-primary fw-bold" step="0.1">
             </div>
             <div class="col-6">
-                <label for="editRate" class="form-label text-secondary small fw-bold">Applied Rate (BDT)</label>
-                <input type="number" id="editRate" class="form-control form-control-modern fw-bold" step="0.01" min="0">
+                <label for="editRate" class="form-label text-muted small fw-semibold">Hourly Scale (BDT)</label>
+                <input type="number" id="editRate" class="form-control ynex-input w-100 text-success fw-bold" step="0.01">
             </div>
         </div>
         <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-modern btn-modern-outline px-4" onclick="closePopupModal('customEditModal')">Cancel</button>
-            <button type="button" id="btnSaveChanges" class="btn btn-modern btn-modern-primary px-4">Commit Changes</button>
+            <button type="button" class="ynex-btn ynex-btn-outline" onclick="closePopupModal('customEditModal')">Cancel</button>
+            <button type="button" id="btnSaveChanges" class="ynex-btn ynex-btn-primary">Update Array Row</button>
         </div>
     </div>
 </div>
 
-<div class="custom-backdrop" id="customProfileModal">
-    <div class="modal-surface">
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-            <h5 class="fw-bold text-dark m-0"><i class="bi bi-person-vcard text-primary me-2"></i>Employee Profile Setup</h5>
-            <button type="button" class="btn-close" onclick="closePopupModal('customProfileModal')"></button>
+<!-- Identity Management Settings Pane -->
+<div class="glass-backdrop" id="customProfileModal">
+    <div class="modal-pane">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--ynex-border) !important;">
+            <h6 class="fw-bold m-0"><i class="bi bi-person-gear text-primary me-2"></i>Profile Architecture Identity</h6>
+            <button type="button" class="btn-close" onclick="closePopupModal('customProfileModal')" style="font-size:0.75rem;"></button>
         </div>
         <div class="row g-3 mb-4">
             <div class="col-6">
-                <label for="profileEmpId" class="form-label text-secondary small fw-bold">Employee ID</label>
-                <input type="text" id="profileEmpId" class="form-control form-control-modern" placeholder="e.g., EMP-789">
+                <label for="profileEmpId" class="form-label text-muted small fw-semibold">Employee ID (File Reference Index)</label>
+                <input type="text" id="profileEmpId" class="form-control ynex-input w-100 fw-bold text-dark">
             </div>
             <div class="col-6">
-                <label for="profileEmpName" class="form-label text-secondary small fw-bold">Employee Full Name</label>
-                <input type="text" id="profileEmpName" class="form-control form-control-modern" placeholder="e.g., Sarah Jenkins">
+                <label for="profileEmpName" class="form-label text-muted small fw-semibold">Full Profile Name</label>
+                <input type="text" id="profileEmpName" class="form-control ynex-input w-100">
             </div>
             <div class="col-6">
-                <label for="profileDesignation" class="form-label text-secondary small fw-bold">Designation</label>
-                <input type="text" id="profileDesignation" class="form-control form-control-modern" placeholder="e.g., Solutions Architect">
+                <label for="profileDesignation" class="form-label text-muted small fw-semibold">Designation Context</label>
+                <input type="text" id="profileDesignation" class="form-control ynex-input w-100">
             </div>
             <div class="col-6">
-                <label for="profileDepartment" class="form-label text-secondary small fw-bold">Department</label>
-                <input type="text" id="profileDepartment" class="form-control form-control-modern" placeholder="e.g., Engineering Operations">
+                <label for="profileDepartment" class="form-label text-muted small fw-semibold">Department Structure</label>
+                <input type="text" id="profileDepartment" class="form-control ynex-input w-100">
             </div>
             <div class="col-12">
-                <label for="profileGlobalRate" class="form-label text-secondary small fw-bold">Standard Hourly Compensation Scale (BDT/Hour)</label>
-                <div class="input-group">
-                    <input type="number" id="profileGlobalRate" class="form-control form-control-modern fw-bold w-75" step="0.01" min="0" value="250.00" style="border-radius: 8px 0 0 8px !important;">
-                    <span class="input-group-text bg-white text-muted small border-start-0 fw-bold w-25 text-center justify-content-center" style="border-radius: 0 8px 8px 0 !important; border: 1px solid var(--border-color)">BDT</span>
-                </div>
+                <label for="profileGlobalRate" class="form-label text-muted small fw-semibold">Standard Compensation Rate Baseline (BDT/Hr)</label>
+                <input type="number" id="profileGlobalRate" class="form-control ynex-input w-100 fw-bold" step="0.01">
             </div>
         </div>
-        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-            <button type="button" class="btn btn-modern btn-modern-outline px-4" onclick="closePopupModal('customProfileModal')">Cancel</button>
-            <button type="button" id="btnSaveProfileInfo" class="btn btn-modern btn-modern-primary px-4">Save Identity Record</button>
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="ynex-btn ynex-btn-outline" onclick="closePopupModal('customProfileModal')">Dismiss</button>
+            <button type="button" id="btnSaveProfileInfo" class="ynex-btn ynex-btn-primary">Commit Array</button>
         </div>
     </div>
 </div>
 
-<div class="custom-backdrop" id="customPreviewModal">
-    <div class="modal-surface modal-surface-lg">
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-            <h5 class="fw-bold text-dark m-0" id="previewModalHeaderTitle"><i class="bi bi-sliders text-danger me-2"></i>Report Parameter Configurations</h5>
-            <button type="button" class="btn-close" onclick="closePopupModal('customPreviewModal')"></button>
+<!-- Invoice Query Matrix Preview Screen Components -->
+<div class="glass-backdrop" id="customPreviewModal">
+    <div class="modal-pane modal-pane-lg">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--ynex-border) !important;">
+            <h6 class="fw-bold m-0" id="previewModalHeaderTitle"><i class="bi bi-printer text-primary me-2"></i>Document Matrix Filters Preview</h6>
+            <button type="button" class="btn-close" onclick="closePopupModal('customPreviewModal')" style="font-size:0.75rem;"></button>
         </div>
-        
-        <div class="row g-3 mb-4 bg-light border border-light-subtle rounded-2 p-3">
+        <div class="row g-3 mb-3 p-3 bg-light rounded mx-0">
             <div class="col-md-6" id="containerParamMonth">
-                <label for="selectParamMonth" class="form-label small fw-bold text-secondary">Target Statement Month</label>
-                <select id="selectParamMonth" class="form-select border-0 bg-white p-2.5 rounded-2 fw-medium text-dark shadow-sm"></select>
+                <label for="selectParamMonth" class="form-label text-muted small fw-semibold">Target Filtering Month</label>
+                <select id="selectParamMonth" class="form-select ynex-input w-100"></select>
             </div>
             <div class="col-md-6" id="containerParamYear">
-                <label for="selectParamYear" class="form-label small fw-bold text-secondary">Target Calendar Year</label>
-                <select id="selectParamYear" class="form-select border-0 bg-white p-2.5 rounded-2 fw-medium text-dark shadow-sm"></select>
+                <label for="selectParamYear" class="form-label text-muted small fw-semibold">Target Processing Year</label>
+                <select id="selectParamYear" class="form-select ynex-input w-100"></select>
             </div>
         </div>
-
-        <div class="border rounded-2 p-3 mb-4 bg-white shadow-sm">
-            <div class="row g-2 text-center">
-                <div class="col-6 border-end">
-                    <span class="text-muted small d-block mb-1">Total Target Hours</span>
-                    <strong class="text-primary fs-4" id="previewParamHours">0.0 hrs</strong>
+        <div class="p-3 bg-light rounded mb-3">
+            <div class="row text-center">
+                <div class="col-6 border-end" style="border-color: var(--ynex-border) !important;">
+                    <span class="text-muted small d-block mb-1">Target Total Scale</span>
+                    <strong class="text-primary fs-5" id="previewParamHours">0.0 hrs</strong>
                 </div>
                 <div class="col-6">
-                    <span class="text-muted small d-block mb-1">Gross Target Earnings</span>
-                    <strong class="text-success fs-4" id="previewParamEarnings">0.00 BDT</strong>
+                    <span class="text-muted small d-block mb-1">Target Total Allocation</span>
+                    <strong class="text-success fs-5" id="previewParamEarnings">0.00 BDT</strong>
                 </div>
             </div>
         </div>
-
-        <label class="form-label text-secondary small fw-bold mb-2">Itemized Statements Preview</label>
-        <div class="table-responsive border rounded-2 bg-white mb-4 shadow-sm" style="max-height: 200px; overflow-y: auto;">
-            <table class="table table-sm table-striped align-middle mb-0" style="font-size: 0.85rem;">
-                <thead class="table-dark sticky-top" id="previewTableHeader">
-                    </thead>
-                <tbody id="previewTableBody">
-                </tbody>
+        <div class="mb-4" style="max-height: 220px; overflow-y: auto; border:1px solid var(--ynex-border);">
+            <table class="table table-ynex align-middle">
+                <thead class="position-sticky top-0" style="z-index:5;" id="previewTableHeader"></thead>
+                <tbody id="previewTableBody"></tbody>
             </table>
         </div>
-
         <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-modern btn-modern-outline px-4" onclick="closePopupModal('customPreviewModal')">Close View</button>
-            <button type="button" id="btnConfirmDownloadPdf" class="btn btn-modern btn-modern-primary bg-danger border-none px-4">
-                <i class="bi bi-file-earmark-pdf-fill me-2"></i>Download Statement PDF
-            </button>
+            <button type="button" class="ynex-btn ynex-btn-outline" onclick="closePopupModal('customPreviewModal')">Close View</button>
+            <button type="button" id="btnConfirmDownloadPdf" class="ynex-btn text-white" style="background-color: var(--ynex-danger);"><i class="bi bi-file-earmark-pdf"></i>Generate PDF Statement</button>
         </div>
     </div>
 </div>
 
 <script>
+    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const FULL_MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    const DOM = {
+        sidebar: document.getElementById('sidebarNode'),
+        sidebarOverlay: document.getElementById('sidebarOverlayNode'),
+        dateDisplayInput: document.getElementById('logDateDisplay'),
+        manualHoursInput: document.getElementById('manualHours'),
+        scheduleModeBadge: document.getElementById('displayScheduleMode'),
+        rateLabelDisplay: document.getElementById('displayRate'),
+        lblEmpId: document.getElementById('lblDisplayEmpId'),
+        lblEmpName: document.getElementById('lblDisplayEmpName'),
+        lblDesignation: document.getElementById('lblDisplayDesignation'),
+        lblDepartment: document.getElementById('lblDisplayDepartment'),
+        logsTableBody: document.getElementById('logsTableBody'),
+        monthlyTitle: document.getElementById('monthlyTitle'),
+        yearlyTitle: document.getElementById('yearlyTitle'),
+        monthlyHours: document.getElementById('monthlyHours'),
+        monthlyEarnings: document.getElementById('monthlyEarnings'),
+        yearlyHours: document.getElementById('yearlyHours'),
+        yearlyEarnings: document.getElementById('yearlyEarnings'),
+        editTargetUid: document.getElementById('editTargetUid'),
+        editDisplayDate: document.getElementById('editDisplayDate'),
+        editHours: document.getElementById('editHours'),
+        editRate: document.getElementById('editRate'),
+        profileEmpId: document.getElementById('profileEmpId'),
+        profileEmpName: document.getElementById('profileEmpName'),
+        profileDesignation: document.getElementById('profileDesignation'),
+        profileDepartment: document.getElementById('profileDepartment'),
+        profileGlobalRate: document.getElementById('profileGlobalRate'),
+        selectParamMonth: document.getElementById('selectParamMonth'),
+        selectParamYear: document.getElementById('selectParamYear'),
+        containerParamMonth: document.getElementById('containerParamMonth'),
+        previewModalHeaderTitle: document.getElementById('previewModalHeaderTitle'),
+        previewTableHeader: document.getElementById('previewTableHeader'),
+        previewTableBody: document.getElementById('previewTableBody'),
+        previewParamHours: document.getElementById('previewParamHours'),
+        previewParamEarnings: document.getElementById('previewParamEarnings'),
+        confirmModalDescriptionText: document.getElementById('confirmModalDescriptionText'),
+        btnExecuteConfirmedAction: document.getElementById('btnExecuteConfirmedAction'),
+        
+        alertTitle: document.getElementById('alertModalTitle'),
+        alertDescription: document.getElementById('alertModalDescriptionText'),
+        alertIconContainer: document.getElementById('alertModalIconContainer'),
+        alertIcon: document.getElementById('alertModalIcon')
+    };
+
     let appState = {
         logs: JSON.parse(localStorage.getItem('ot_v67_logs')) || [],
         rate: parseFloat(localStorage.getItem('ot_v67_rate')) || 250.00,
-        employeeInfo: JSON.parse(localStorage.getItem('ot_v67_profile')) || {
-            empId: '', empName: '', designation: '', department: ''
-        },
+        employeeInfo: JSON.parse(localStorage.getItem('ot_v67_profile')) || { empId: 'EMP-001', empName: 'Default Workspace Profile', designation: 'General Associate', department: 'Operations' },
         currentDate: new Date(),
         activePreviewScope: 'monthly', 
         selectedReportMonth: new Date().getMonth(), 
-        selectedReportYear: new Date().getFullYear() 
+        selectedReportYear: new Date().getFullYear(),
+        pendingConfirmationContext: { actionType: null, referenceTarget: null }
     };
 
-    const dateDisplayInput = document.getElementById('logDateDisplay');
-
-    applyLatestSavedRateOrProfile(); 
-    syncDatePickerDisplay();
-
-    document.getElementById('btnPrevDate').addEventListener('click', () => shiftActiveDateContext(-1));
-    document.getElementById('btnNextDate').addEventListener('click', () => shiftActiveDateContext(1));
-
-    function shiftActiveDateContext(daysOffset) {
-        appState.currentDate.setDate(appState.currentDate.getDate() + daysOffset);
-        syncDatePickerDisplay();
-    }
-
-    function applyLatestSavedRateOrProfile() {
-        if(appState.logs.length > 0 && !appState.employeeInfo.empId) {
-            appState.rate = parseFloat(appState.logs[0].appliedRate) || 250.00;
+    window.toggleSidebarMenu = function(forceOpen) {
+        if (forceOpen) {
+            DOM.sidebar.classList.add('open');
+            DOM.sidebarOverlay.classList.add('show');
+        } else {
+            DOM.sidebar.classList.remove('open');
+            DOM.sidebarOverlay.classList.remove('show');
         }
-        localStorage.setItem('ot_v67_rate', appState.rate);
-        updateRateLabelDisplay();
-        refreshProfileUIIndicators();
+    };
+
+    window.scrollToSection = function(sectionId) {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    window.launchCustomAlertModal = function(title, description, variant = 'info') {
+        DOM.alertTitle.innerText = title;
+        DOM.alertDescription.innerText = description;
+        DOM.alertIconContainer.className = "avatar-circle mx-auto mb-3";
+        DOM.alertIcon.className = "bi";
+        
+        if (variant === 'success') {
+            DOM.alertIconContainer.classList.add('avatar-success');
+            DOM.alertIcon.classList.add('bi-check-circle');
+        } else if (variant === 'danger') {
+            DOM.alertIconContainer.classList.add('avatar-danger');
+            DOM.alertIcon.classList.add('bi-x-circle');
+        } else if (variant === 'warning') {
+            DOM.alertIconContainer.classList.add('avatar-warning');
+            DOM.alertIcon.classList.add('bi-exclamation-circle');
+        } else {
+            DOM.alertIconContainer.classList.add('avatar-primary');
+            DOM.alertIcon.classList.add('bi-info-circle');
+        }
+        openPopupModal('customAlertModal');
+    };
+
+    function parseLocalDate(dateStr) {
+        const parts = dateStr.split('-');
+        return parts.length === 3 ? new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)) : new Date(dateStr);
     }
 
-    function refreshProfileUIIndicators() {
-        document.getElementById('lblDisplayEmpId').innerText = appState.employeeInfo.empId || 'Not Set';
-        document.getElementById('lblDisplayEmpName').innerText = appState.employeeInfo.empName || 'Unconfigured Profile';
-        document.getElementById('lblDisplayDesignation').innerText = appState.employeeInfo.designation || '—';
-        document.getElementById('lblDisplayDepartment').innerText = appState.employeeInfo.department || '—';
-    }
-
-    function formatToCustomDateString(dateObject) {
-        const day = String(dateObject.getDate()).padStart(2, '0');
-        const monthNamesList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return `${day} ${monthNamesList[dateObject.getMonth()]} ${String(dateObject.getFullYear()).substring(2)}`;
-    }
-
-    function reformatRawHyphenString(hyphenatedString) {
-        const parts = hyphenatedString.split('-');
-        return formatToCustomDateString(new Date(parts[0], parts[1] - 1, parts[2]));
+    function formatToCustomDateString(dateObj) {
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${day} ${MONTH_NAMES[dateObj.getMonth()]} ${String(dateObj.getFullYear()).substring(2)}`;
     }
 
     function syncDatePickerDisplay() {
-        dateDisplayInput.value = formatToCustomDateString(appState.currentDate);
-        evaluateAutomatedDateRules();
+        DOM.dateDisplayInput.value = formatToCustomDateString(appState.currentDate);
+        const dayOfWeek = appState.currentDate.getDay();
+        const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+        DOM.manualHoursInput.value = isWeekend ? "9.5" : "5.5";
+        DOM.scheduleModeBadge.innerText = isWeekend ? "Weekend" : "Weekday";
+        DOM.scheduleModeBadge.className = `fw-bold m-0 ${isWeekend ? 'text-danger' : 'text-primary'}`;
     }
 
-    function evaluateAutomatedDateRules() {
-        const dayOfWeekIndex = appState.currentDate.getDay(); 
-        const hourInputBox = document.getElementById('manualHours');
-        const modeBadge = document.getElementById('displayScheduleMode');
-
-        if (dayOfWeekIndex === 5 || dayOfWeekIndex === 6) {
-            hourInputBox.value = "9.5";
-            modeBadge.innerText = "Weekend";
-            modeBadge.className = "fs-5 fw-bold text-danger";
-        } else {
-            hourInputBox.value = "5.5";
-            modeBadge.innerText = "Weekday";
-            modeBadge.className = "fs-5 fw-bold text-primary";
-        }
+    function applyLatestSavedRateOrProfile() {
+        localStorage.setItem('ot_v67_rate', appState.rate);
+        localStorage.setItem('ot_v67_profile', JSON.stringify(appState.employeeInfo));
+        DOM.rateLabelDisplay.innerText = `${appState.rate.toFixed(2)} BDT`;
+        DOM.lblEmpId.innerText = appState.employeeInfo.empId || '—';
+        DOM.lblEmpName.innerText = appState.employeeInfo.empName || 'Unconfigured Profile';
+        DOM.lblDesignation.innerText = appState.employeeInfo.designation || '—';
+        DOM.lblDepartment.innerText = appState.employeeInfo.department || '—';
     }
 
-    function updateRateLabelDisplay() {
-        document.getElementById('displayRate').innerText = `${appState.rate.toFixed(2)} BDT`;
-    }
-
-    window.launchProfileModal = function() {
-        document.getElementById('profileEmpId').value = appState.employeeInfo.empId || '';
-        document.getElementById('profileEmpName').value = appState.employeeInfo.empName || '';
-        document.getElementById('profileDesignation').value = appState.employeeInfo.designation || '';
-        document.getElementById('profileDepartment').value = appState.employeeInfo.department || '';
-        document.getElementById('profileGlobalRate').value = appState.rate.toFixed(2);
+    function updateViewPipeline() {
+        const activeClock = new Date();
+        const activeYear = activeClock.getFullYear();
+        const activeMonth = activeClock.getMonth();
         
-        openPopupModal('customProfileModal');
-    };
+        DOM.monthlyTitle.innerText = `${FULL_MONTH_NAMES[activeMonth]} ${activeYear}`;
+        DOM.yearlyTitle.innerText = `${activeYear} Annual Framework`;
+
+        let mHrs = 0, mEarnings = 0, yHrs = 0, yEarnings = 0;
+        let htmlContent = '';
+
+        appState.logs.forEach(record => {
+            const parsedDate = parseLocalDate(record.rawDate);
+            const matchesYear = parsedDate.getFullYear() === activeYear;
+            const matchesMonth = matchesYear && parsedDate.getMonth() === activeMonth;
+
+            if (matchesMonth) { mHrs += record.hoursTracked; mEarnings += record.yieldGross; }
+            if (matchesYear) { yHrs += record.hoursTracked; yEarnings += record.yieldGross; }
+
+            const isWeekend = (record.dayName === 'Friday' || record.dayName === 'Saturday');
+            htmlContent += `
+                <tr>
+                    <td class="fw-bold text-dark">${record.formattedDate}</td>
+                    <td><span class="${isWeekend ? 'text-danger fw-bold' : 'text-secondary'}">${record.dayName}</span></td>
+                    <td><span class="badge bg-light text-primary px-2 py-1.5 fw-bold">${record.hoursTracked} hrs</span></td>
+                    <td>${record.appliedRate.toFixed(2)} BDT</td>
+                    <td class="text-success fw-bold">${record.yieldGross.toFixed(2)} BDT</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="ynex-btn ynex-btn-outline btn-sm px-2 py-1" onclick="launchEditPipelineModal('${record.uid}')"><i class="bi bi-pencil"></i></button>
+                            <button class="ynex-btn ynex-btn-danger-light btn-sm px-2 py-1" onclick="launchCustomConfirmModal('ROW_RECORD', 'Are you sure you want to permanently delete the log row entry recorded on ${record.formattedDate}?', '${record.uid}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+        });
+
+        DOM.logsTableBody.innerHTML = htmlContent || `<tr><td colspan="6" class="text-center text-muted py-4"><i class="bi bi-layers d-block mb-2 opacity-50"></i>Ledger history data structure grid framework is empty.</td></tr>`;
+        DOM.monthlyHours.innerText = `${mHrs.toFixed(1)} hrs`;
+        DOM.monthlyEarnings.innerText = `${mEarnings.toFixed(2)} BDT`;
+        DOM.yearlyHours.innerText = `${yHrs.toFixed(1)} hrs`;
+        DOM.yearlyEarnings.innerText = `${yEarnings.toFixed(2)} BDT`;
+    }
 
     function openPopupModal(id) {
         const modal = document.getElementById(id);
@@ -573,316 +762,169 @@
     window.closePopupModal = function(id) {
         const modal = document.getElementById(id);
         modal.classList.remove('show');
-        setTimeout(() => modal.style.display = 'none', 200);
+        setTimeout(() => modal.style.display = 'none', 150);
+    };
+
+    window.launchCustomConfirmModal = function(actionType, instructionText, referenceTarget = null) {
+        appState.pendingConfirmationContext = { actionType: actionType, referenceTarget: referenceTarget };
+        DOM.confirmModalDescriptionText.innerText = instructionText;
+        openPopupModal('customConfirmModal');
+    };
+
+    DOM.btnExecuteConfirmedAction.addEventListener('click', () => {
+        const ctx = appState.pendingConfirmationContext;
+        if (ctx.actionType === 'ROW_RECORD' && ctx.referenceTarget) {
+            appState.logs = appState.logs.filter(x => x.uid !== ctx.referenceTarget);
+            localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
+            launchCustomAlertModal("Log Removed", "The target tracking log item entry row record has been safely deleted.", "success");
+        } else if (ctx.actionType === 'ALL_RECORDS') {
+            appState.logs = [];
+            localStorage.setItem('ot_v67_logs', JSON.stringify([]));
+            launchCustomAlertModal("Dataset Flattened", "The historical framework ledger log database arrays have been fully reset.", "success");
+        }
+        updateViewPipeline();
+        closePopupModal('customConfirmModal');
+        appState.pendingConfirmationContext = { actionType: null, referenceTarget: null };
+    });
+
+    window.launchProfileModal = function() {
+        DOM.profileEmpId.value = appState.employeeInfo.empId || '';
+        DOM.profileEmpName.value = appState.employeeInfo.empName || '';
+        DOM.profileDesignation.value = appState.employeeInfo.designation || '';
+        DOM.profileDepartment.value = appState.employeeInfo.department || '';
+        DOM.profileGlobalRate.value = appState.rate.toFixed(2);
+        openPopupModal('customProfileModal');
     };
 
     document.getElementById('btnSaveProfileInfo').addEventListener('click', () => {
-        const targetRate = parseFloat(document.getElementById('profileGlobalRate').value);
-        if(isNaN(targetRate) || targetRate < 0) return alert("Verify compensation rate.");
-
-        appState.employeeInfo = {
-            empId: document.getElementById('profileEmpId').value.trim(),
-            empName: document.getElementById('profileEmpName').value.trim(),
-            designation: document.getElementById('profileDesignation').value.trim(),
-            department: document.getElementById('profileDepartment').value.trim()
+        const targetRate = parseFloat(DOM.profileGlobalRate.value);
+        if (isNaN(targetRate) || targetRate < 0) {
+            return launchCustomAlertModal("Validation Error", "Please provide a valid compensation baseline hourly multiplier value.", "danger");
+        }
+        appState.employeeInfo = { 
+            empId: DOM.profileEmpId.value.trim() || 'EMP-UNKNOWN', 
+            empName: DOM.profileEmpName.value.trim() || 'Unnamed Resource', 
+            designation: DOM.profileDesignation.value.trim() || '—', 
+            department: DOM.profileDepartment.value.trim() || '—' 
         };
         appState.rate = targetRate;
-        
-        localStorage.setItem('ot_v67_profile', JSON.stringify(appState.employeeInfo));
-        localStorage.setItem('ot_v67_rate', appState.rate);
-        
-        updateRateLabelDisplay();
-        refreshProfileUIIndicators();
+        applyLatestSavedRateOrProfile();
         closePopupModal('customProfileModal');
         updateViewPipeline();
+        launchCustomAlertModal("Profile Synchronized", "Identity parameters saved natively into system states.", "success");
     });
 
     document.getElementById('btnLogData').addEventListener('click', () => {
-        const year = appState.currentDate.getFullYear();
-        const month = String(appState.currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(appState.currentDate.getDate()).padStart(2, '0');
-        const canonicalIsoDateStr = `${year}-${month}-${day}`;
+        const canonicalIsoDateStr = `${appState.currentDate.getFullYear()}-${String(appState.currentDate.getMonth() + 1).padStart(2, '0')}-${String(appState.currentDate.getDate()).padStart(2, '0')}`;
+        const loggedHours = parseFloat(DOM.manualHoursInput.value) || 0;
         
-        const loggedHours = parseFloat(document.getElementById('manualHours').value) || 0;
-
         if (appState.logs.some(x => x.rawDate === canonicalIsoDateStr)) {
-            alert(`A record already exists for ${formatToCustomDateString(appState.currentDate)}.`);
-            return;
+            return launchCustomAlertModal("Entry Collision", `A tracking workspace pipeline record already exists for ${formatToCustomDateString(appState.currentDate)}.`, "warning");
         }
 
-        const weekDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         appState.logs.push({
-            uid: 'tx_v67_' + Date.now(),
-            rawDate: canonicalIsoDateStr,
-            formattedDate: formatToCustomDateString(appState.currentDate),
-            dayName: weekDayNames[appState.currentDate.getDay()],
-            hoursTracked: loggedHours,
-            appliedRate: appState.rate, 
-            yieldGross: loggedHours * appState.rate
+            uid: 'tx_v67_' + Date.now(), rawDate: canonicalIsoDateStr, formattedDate: formatToCustomDateString(appState.currentDate),
+            dayName: WEEKDAY_NAMES[appState.currentDate.getDay()], hoursTracked: loggedHours, appliedRate: appState.rate, yieldGross: loggedHours * appState.rate
         });
-
         appState.logs.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
         localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
-        
-        applyLatestSavedRateOrProfile();
         updateViewPipeline();
+        launchCustomAlertModal("Log Committed", "Hours computed and committed successfully.", "success");
     });
 
     window.launchEditPipelineModal = function(uid) {
         const record = appState.logs.find(x => x.uid === uid);
         if (!record) return;
-
-        document.getElementById('editTargetUid').value = record.uid;
-        document.getElementById('editDisplayDate').value = `${record.formattedDate} (${record.dayName})`;
-        document.getElementById('editHours').value = record.hoursTracked;
-        document.getElementById('editRate').value = record.appliedRate;
-
+        DOM.editTargetUid.value = record.uid;
+        DOM.editDisplayDate.value = record.formattedDate;
+        DOM.editHours.value = record.hoursTracked;
+        DOM.editRate.value = record.appliedRate;
         openPopupModal('customEditModal');
     };
 
     document.getElementById('btnSaveChanges').addEventListener('click', () => {
-        const targetUid = document.getElementById('editTargetUid').value;
+        const targetUid = DOM.editTargetUid.value;
         const idx = appState.logs.findIndex(x => x.uid === targetUid);
-        
         if (idx !== -1) {
-            const nextHours = parseFloat(document.getElementById('editHours').value) || 0;
-            const nextRate = parseFloat(document.getElementById('editRate').value) || 0;
-
+            const nextHours = parseFloat(DOM.editHours.value) || 0;
+            const nextRate = parseFloat(DOM.editRate.value) || 0;
             appState.logs[idx].hoursTracked = nextHours;
             appState.logs[idx].appliedRate = nextRate;
             appState.logs[idx].yieldGross = nextHours * nextRate;
-
             localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
-            applyLatestSavedRateOrProfile(); 
             updateViewPipeline();
             closePopupModal('customEditModal');
+            launchCustomAlertModal("Parameters Modified", "Changes committed successfully.", "success");
         }
     });
 
     window.openReportPreviewModal = function(scopeType) {
-        if (appState.logs.length === 0) return alert("No tracking logs found.");
-
+        if (appState.logs.length === 0) {
+            return launchCustomAlertModal("Query Denied", "No log elements exist inside the history matrix.", "warning");
+        }
         appState.activePreviewScope = scopeType;
         populateParameterSelectors();
 
-        const thead = document.getElementById('previewTableHeader');
         if (scopeType === 'monthly') {
-            document.getElementById('containerParamMonth').style.display = 'block';
-            document.getElementById('previewModalHeaderTitle').innerHTML = `<i class="bi bi-file-earmark-pdf text-primary me-2"></i>Monthly Statements Filtering`;
-            thead.innerHTML = `
-                <tr>
-                    <th class="p-2">Date</th>
-                    <th class="p-2">Day Frame</th>
-                    <th class="p-2">Hours</th>
-                    <th class="p-2">Rate Scale</th>
-                    <th class="p-2">Gross Yield</th>
-                </tr>`;
+            DOM.containerParamMonth.style.display = 'block';
+            DOM.previewModalHeaderTitle.innerHTML = `<i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i>Monthly Invoice Query Matrix`;
+            DOM.previewTableHeader.innerHTML = `<tr><th>Log Date</th><th>Day</th><th>Duration</th><th>Applied Rate</th><th>Gross Allocation</th></tr>`;
         } else {
-            document.getElementById('containerParamMonth').style.display = 'none';
-            document.getElementById('previewModalHeaderTitle').innerHTML = `<i class="bi bi-file-earmark-pdf text-success me-2"></i>Yearly Consolidated Statements`;
-            thead.innerHTML = `
-                <tr>
-                    <th class="p-2">Month</th>
-                    <th class="p-2">Aggregated Hours</th>
-                    <th class="p-2">Gross Accumulated Yield</th>
-                </tr>`;
+            DOM.containerParamMonth.style.display = 'none';
+            DOM.previewModalHeaderTitle.innerHTML = `<i class="bi bi-file-earmark-spreadsheet text-success me-2"></i>Annual Consolidation Query Matrix`;
+            DOM.previewTableHeader.innerHTML = `<tr><th>Target Month</th><th>Aggregated Hours</th><th>Gross Allocation Yield</th></tr>`;
         }
-
         refreshModalParameterPreviewData();
         openPopupModal('customPreviewModal');
     };
 
     function populateParameterSelectors() {
-        const monthSelect = document.getElementById('selectParamMonth');
-        const yearSelect = document.getElementById('selectParamYear');
-
-        monthSelect.innerHTML = ''; yearSelect.innerHTML = '';
-
-        const monthNamesList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        monthNamesList.forEach((name, index) => {
-            let opt = document.createElement('option');
-            opt.value = index; opt.text = name;
+        DOM.selectParamMonth.innerHTML = ''; DOM.selectParamYear.innerHTML = '';
+        FULL_MONTH_NAMES.forEach((name, index) => {
+            let opt = document.createElement('option'); opt.value = index; opt.text = name;
             if (index === appState.selectedReportMonth) opt.selected = true;
-            monthSelect.appendChild(opt);
+            DOM.selectParamMonth.appendChild(opt);
         });
-
-        let operationalYearsList = [...new Set(appState.logs.map(log => new Date(log.rawDate).getFullYear()))];
-        const fallBackCurrentYear = new Date().getFullYear();
-        if(!operationalYearsList.includes(fallBackCurrentYear)) operationalYearsList.push(fallBackCurrentYear);
-        operationalYearsList.sort((a,b) => b - a);
-
+        let operationalYearsList = [...new Set(appState.logs.map(log => parseLocalDate(log.rawDate).getFullYear()))];
+        const currentYear = new Date().getFullYear();
+        if (!operationalYearsList.includes(currentYear)) operationalYearsList.push(currentYear);
+        operationalYearsList.sort((a, b) => b - a);
         operationalYearsList.forEach(yr => {
-            let opt = document.createElement('option');
-            opt.value = yr; opt.text = `${yr} Calendar Frame`;
+            let opt = document.createElement('option'); opt.value = yr; opt.text = yr;
             if (yr === appState.selectedReportYear) opt.selected = true;
-            yearSelect.appendChild(opt);
+            DOM.selectParamYear.appendChild(opt);
         });
     }
-
-    document.getElementById('selectParamMonth').addEventListener('change', (e) => {
-        appState.selectedReportMonth = parseInt(e.target.value);
-        refreshModalParameterPreviewData();
-    });
-
-    document.getElementById('selectParamYear').addEventListener('change', (e) => {
-        appState.selectedReportYear = parseInt(e.target.value);
-        refreshModalParameterPreviewData();
-    });
 
     function refreshModalParameterPreviewData() {
         const scope = appState.activePreviewScope;
-        const targetMonth = appState.selectedReportMonth;
-        const targetYear = appState.selectedReportYear;
-        const monthNamesList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
         let dataRowsPipeline = appState.logs.filter(log => {
-            const parsingDateObj = new Date(log.rawDate);
-            if (scope === 'monthly') {
-                return parsingDateObj.getFullYear() === targetYear && parsingDateObj.getMonth() === targetMonth;
-            }
-            return parsingDateObj.getFullYear() === targetYear;
+            const parsingDateObj = parseLocalDate(log.rawDate);
+            return scope === 'monthly' ? (parsingDateObj.getFullYear() === appState.selectedReportYear && parsingDateObj.getMonth() === appState.selectedReportMonth) : parsingDateObj.getFullYear() === appState.selectedReportYear;
         });
 
-        let accumulatedHrs = 0, accumulatedGross = 0;
-        const tbodyViewContainer = document.getElementById('previewTableBody');
-        tbodyViewContainer.innerHTML = '';
+        let accumulatedHrs = 0, accumulatedGross = 0, htmlRowsStr = '';
 
         if (scope === 'monthly') {
             dataRowsPipeline.forEach(row => {
-                accumulatedHrs += row.hoursTracked;
-                accumulatedGross += row.yieldGross;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-2"><strong>${row.formattedDate}</strong></td>
-                    <td class="p-2"><span class="small text-muted">${row.dayName}</span></td>
-                    <td class="p-2"><span class="fw-bold text-primary">${row.hoursTracked.toFixed(1)} hrs</span></td>
-                    <td class="p-2">${row.appliedRate.toFixed(2)}</td>
-                    <td class="p-2 text-success fw-bold">${row.yieldGross.toFixed(2)} BDT</td>
-                `;
-                tbodyViewContainer.appendChild(tr);
+                accumulatedHrs += row.hoursTracked; accumulatedGross += row.yieldGross;
+                htmlRowsStr += `<tr><td><strong>${row.formattedDate}</strong></td><td><span class="small text-muted fw-semibold">${row.dayName}</span></td><td><span class="fw-bold text-primary">${row.hoursTracked.toFixed(1)} hrs</span></td><td>${row.appliedRate.toFixed(2)}</td><td class="text-success fw-bold">${row.yieldGross.toFixed(2)} BDT</td></tr>`;
             });
         } else {
-            // FIX: Group yearly data structurally by month, dynamically summing hours and amount metrics
-            let monthlySummaryMap = Array.from({length: 12}, (_, i) => ({ monthName: monthNamesList[i], hours: 0, earnings: 0, hasData: false }));
-            
+            let summaryMap = Array.from({length: 12}, (_, i) => ({ monthName: FULL_MONTH_NAMES[i], hours: 0, earnings: 0, hasData: false }));
             dataRowsPipeline.forEach(row => {
-                const mIdx = new Date(row.rawDate).getMonth();
-                monthlySummaryMap[mIdx].hours += row.hoursTracked;
-                monthlySummaryMap[mIdx].earnings += row.yieldGross;
-                monthlySummaryMap[mIdx].hasData = true;
-                
-                accumulatedHrs += row.hoursTracked;
-                accumulatedGross += row.yieldGross;
+                const mIdx = parseLocalDate(row.rawDate).getMonth();
+                summaryMap[mIdx].hours += row.hoursTracked; summaryMap[mIdx].earnings += row.yieldGross; summaryMap[mIdx].hasData = true;
+                accumulatedHrs += row.hoursTracked; accumulatedGross += row.yieldGross;
             });
-
-            monthlySummaryMap.forEach(summary => {
-                if(summary.hasData) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="p-2"><strong>${summary.monthName}</strong></td>
-                        <td class="p-2"><span class="fw-bold text-primary">${summary.hours.toFixed(1)} hrs</span></td>
-                        <td class="p-2 text-success fw-bold">${summary.earnings.toFixed(2)} BDT</td>
-                    `;
-                    tbodyViewContainer.appendChild(tr);
-                }
+            summaryMap.forEach(s => {
+                if (s.hasData) htmlRowsStr += `<tr><td><strong>${s.monthName}</strong></td><td><span class="fw-bold text-primary">${s.hours.toFixed(1)} hrs</span></td><td class="text-success fw-bold">${s.earnings.toFixed(2)} BDT</td></tr>`;
             });
         }
 
-        if (dataRowsPipeline.length === 0) {
-            tbodyViewContainer.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4 small">No tracking rows matched.</td></tr>`;
-        }
-
-        document.getElementById('previewParamHours').innerText = `${accumulatedHrs.toFixed(1)} hrs`;
-        document.getElementById('previewParamEarnings').innerText = `${accumulatedGross.toFixed(2)} BDT`;
-    }
-
-    document.getElementById('btnConfirmDownloadPdf').addEventListener('click', () => {
-        executePdfGeneration(appState.activePreviewScope, appState.selectedReportMonth, appState.selectedReportYear);
-        closePopupModal('customPreviewModal');
-    });
-
-    function executePdfGeneration(scopeType, targetMonth, targetYear) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'pt', 'a4');
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        let filteredLogs = appState.logs.filter(log => {
-            const pDate = new Date(log.rawDate);
-            if (scopeType === 'monthly') {
-                return pDate.getFullYear() === targetYear && pDate.getMonth() === targetMonth;
-            }
-            return pDate.getFullYear() === targetYear;
-        });
-
-        if (filteredLogs.length === 0) return alert("Target context is empty.");
-
-        let totalHrs = 0; let totalEarnings = 0;
-        let tableHeaders = [];
-        let rowsTableData = [];
-
-        if (scopeType === 'monthly') {
-            tableHeaders = [['Execution Date', 'Weekday Frame', 'Overtime Hours', 'Applied Rate Scale', 'Gross Yield Pay']];
-            rowsTableData = filteredLogs.map(x => {
-                totalHrs += x.hoursTracked; totalEarnings += x.yieldGross;
-                return [x.formattedDate, x.dayName, `${x.hoursTracked.toFixed(1)} hrs`, `${x.appliedRate.toFixed(2)} BDT`, `${x.yieldGross.toFixed(2)} BDT`];
-            });
-        } else {
-            // FIX: Aggregate Yearly PDF elements cleanly inside month groups
-            tableHeaders = [['Target Month', 'Aggregated Overtime Hours', 'Gross Accumulated Yield']];
-            let summaryArr = Array.from({length: 12}, (_, i) => ({ name: monthNames[i], hours: 0, earnings: 0, active: false }));
-            
-            filteredLogs.forEach(x => {
-                const mIdx = new Date(x.rawDate).getMonth();
-                summaryArr[mIdx].hours += x.hoursTracked;
-                summaryArr[mIdx].earnings += x.yieldGross;
-                summaryArr[mIdx].active = true;
-                totalHrs += x.hoursTracked; 
-                totalEarnings += x.yieldGross;
-            });
-
-            summaryArr.forEach(m => {
-                if (m.active) {
-                    rowsTableData.push([m.name, `${m.hours.toFixed(1)} hrs`, `${m.earnings.toFixed(2)} BDT`]);
-                }
-            });
-        }
-
-        const reportTitle = scopeType === 'monthly' 
-            ? `Overtime Statement — ${monthNames[targetMonth]} ${targetYear}`
-            : `Annual Overtime Report — ${targetYear}`;
-
-        doc.setFont("Helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(15, 23, 42); doc.text(reportTitle, 40, 45);
-        doc.setFont("Helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.text(`Generated on: ${formatToCustomDateString(new Date())}`, 40, 60);
-
-        doc.setFillColor(248, 250, 252); doc.setDrawColor(226, 232, 240); doc.roundedRect(40, 72, 515, 52, 4, 4, 'FD');
-        doc.setFont("Helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(71, 85, 105); doc.text("EMPLOYEE METADATA:", 50, 86);
-        doc.setFont("Helvetica", "normal"); doc.setTextColor(100, 116, 139);
-        doc.text(`Name: ${appState.employeeInfo.empName || 'Unset'} (${appState.employeeInfo.empId || 'Unset'})`, 50, 101);
-        doc.text(`Designation: ${appState.employeeInfo.designation || 'Unset'}`, 50, 113);
-        doc.text(`Department: ${appState.employeeInfo.department || 'Unset'}`, 320, 101);
-
-        doc.setFillColor(240, 253, 250); doc.roundedRect(40, 134, 515, 42, 4, 4, 'F');
-        doc.setFont("Helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(15, 23, 42);
-        doc.text(`Total Log Hours: ${totalHrs.toFixed(1)} hrs`, 55, 159);
-        doc.text(`Net Yield: ${totalEarnings.toFixed(2)} BDT`, 320, 159);
-
-        doc.autoTable({
-            startY: 195,
-            head: tableHeaders,
-            body: rowsTableData,
-            theme: 'striped',
-            headStyles: { fillColor: scopeType === 'monthly' ? [79, 70, 229] : [16, 185, 129], textColor: [255, 255, 255], fontStyle: 'bold' },
-            styles: { fontSize: 9, cellPadding: 8, font: 'Helvetica' },
-            columnStyles: { 
-                0: { fontStyle: 'bold' }, 
-                2: { fontStyle: 'bold', textColor: scopeType === 'monthly' ? [15, 23, 42] : [16, 185, 129] },
-                4: { fontStyle: 'bold', textColor: [16, 185, 129] } 
-            },
-            margin: { left: 40, right: 40 }
-        });
-
-        doc.save(scopeType === 'monthly' ? `OT_Statement_${monthNames[targetMonth]}_${targetYear}.pdf` : `OT_Annual_Report_${targetYear}.pdf`);
+        DOM.previewTableBody.innerHTML = htmlRowsStr || `<tr><td colspan="5" class="text-center text-muted py-3">No matching transactional dataset rows discovered.</td></tr>`;
+        DOM.previewParamHours.innerText = `${accumulatedHrs.toFixed(1)} hrs`;
+        DOM.previewParamEarnings.innerText = `${accumulatedGross.toFixed(2)} BDT`;
     }
 
     document.getElementById('importFile').addEventListener('change', function(e) {
@@ -891,163 +933,117 @@
         reader.onload = function(evt) {
             try {
                 const rawContent = evt.target.result.trim();
-                if (rawContent.startsWith('[')) { 
-                    appState.logs = JSON.parse(rawContent); 
-                    if(appState.logs.length > 0) {
-                        appState.rate = parseFloat(appState.logs[0].appliedRate) || 250.00;
-                        localStorage.setItem('ot_v67_rate', appState.rate);
-                    }
-                } else {
-                    const rows = rawContent.split('\n'); 
-                    const importedMatrixArray = [];
+                let importedLogs = [];
+                
+                let parsedEmpId = '';
+                let parsedEmpName = '';
+                let parsedDesignation = '';
+                let parsedDepartment = '';
+                let parsedRate = null;
+
+                const rows = rawContent.split('\n');
+                for (let i = 0; i < rows.length; i++) {
+                    const currentRowStr = rows[i].trim();
+                    if (!currentRowStr) continue;
                     
-                    for(let i = 1; i < rows.length; i++) {
-                        if(!rows[i].trim()) continue;
-                        
-                        const columns = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                        
-                        if(columns.length >= 4) {
-                            const dateVal = columns[0].replace(/"/g, '').trim();
-                            if (importedMatrixArray.some(x => x.rawDate === dateVal)) continue;
-                            
-                            const parts = dateVal.split('-'); 
-                            const dayIdx = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]).getDay() : 0;
-                            const weekDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                            
-                            if(i === 1 && columns.length >= 8) {
-                                appState.employeeInfo.empId = columns[4].replace(/"/g, '').trim();
-                                appState.employeeInfo.empName = columns[5].replace(/"/g, '').trim();
-                                appState.employeeInfo.designation = columns[6].replace(/"/g, '').trim();
-                                appState.employeeInfo.department = columns[7].replace(/"/g, '').trim();
-                                localStorage.setItem('ot_v67_profile', JSON.stringify(appState.employeeInfo));
-                            }
-
-                            const parsedHours = parseFloat(columns[1].replace(/[^\d.]/g, '')) || 0;
-                            const parsedRate = parseFloat(columns[2].replace(/[^\d.]/g, '')) || 0;
-                            const parsedYield = parseFloat(columns[3].replace(/[^\d.]/g, '')) || 0;
-
-                            importedMatrixArray.push({
-                                uid: 'imported_' + i + '_' + Date.now(), 
-                                rawDate: dateVal,
-                                formattedDate: parts.length === 3 ? reformatRawHyphenString(dateVal) : dateVal,
-                                dayName: weekDayNames[dayIdx], 
-                                hoursTracked: parsedHours,
-                                appliedRate: parsedRate, 
-                                yieldGross: parsedYield || (parsedHours * parsedRate)
-                            });
-                        }
+                    if (currentRowStr.startsWith('#EMP_ID:')) {
+                        parsedEmpId = currentRowStr.replace('#EMP_ID:', '').trim();
+                        continue;
                     }
-                    if(importedMatrixArray.length > 0) {
-                        appState.logs = importedMatrixArray;
-                        appState.rate = importedMatrixArray[0].appliedRate || 250.00;
-                        localStorage.setItem('ot_v67_rate', appState.rate);
+                    if (currentRowStr.startsWith('#EMP_NAME:')) {
+                        parsedEmpName = currentRowStr.replace('#EMP_NAME:', '').trim();
+                        continue;
+                    }
+                    if (currentRowStr.startsWith('#DESIGNATION:')) {
+                        parsedDesignation = currentRowStr.replace('#DESIGNATION:', '').trim();
+                        continue;
+                    }
+                    if (currentRowStr.startsWith('#DEPARTMENT:')) {
+                        parsedDepartment = currentRowStr.replace('#DEPARTMENT:', '').trim();
+                        continue;
+                    }
+                    if (currentRowStr.startsWith('#GLOBAL_RATE:')) {
+                        const tempVal = parseFloat(currentRowStr.replace('#GLOBAL_RATE:', '').trim());
+                        if (!isNaN(tempVal)) parsedRate = tempVal;
+                        continue;
+                    }
+
+                    const columns = currentRowStr.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (columns.length >= 4 && i > 0 && !currentRowStr.startsWith('Date,')) {
+                        const dateVal = columns[0].replace(/"/g, '').trim();
+                        const parts = dateVal.split('-'); if (parts.length !== 3) continue;
+                        const parsedHours = parseFloat(columns[1]) || 0; 
+                        const appliedRowRate = parseFloat(columns[2]) || (parsedRate || appState.rate);
+                        
+                        importedLogs.push({
+                            uid: 'imported_' + i + '_' + Date.now(), rawDate: dateVal, formattedDate: formatToCustomDateString(parseLocalDate(dateVal)),
+                            dayName: WEEKDAY_NAMES[parseLocalDate(dateVal).getDay()], hoursTracked: parsedHours, appliedRate: appliedRowRate, yieldGross: parsedHours * appliedRowRate
+                        });
                     }
                 }
-                appState.logs.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
-                localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
                 
-                updateRateLabelDisplay(); 
-                refreshProfileUIIndicators();
+                if (parsedEmpId || parsedEmpName || parsedDesignation || parsedDepartment || parsedRate !== null) {
+                    appState.employeeInfo = {
+                        empId: parsedEmpId || appState.employeeInfo.empId,
+                        empName: parsedEmpName || appState.employeeInfo.empName,
+                        designation: parsedDesignation || appState.employeeInfo.designation,
+                        department: parsedDepartment || appState.employeeInfo.department
+                    };
+                    if (parsedRate !== null) appState.rate = parsedRate;
+                }
+
+                if (importedLogs.length > 0) {
+                    appState.logs = importedLogs;
+                }
+                
+                appState.logs.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
+                
+                localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
+                applyLatestSavedRateOrProfile();
                 updateViewPipeline(); 
-                alert("Data arrays, profile, and logging rate synchronized correctly.");
+                
+                launchCustomAlertModal(
+                    "Profile Synchronized", 
+                    `Successfully loaded specialized metrics dataset for Employee ID: ${appState.employeeInfo.empId} (${appState.employeeInfo.empName}) at the rate of ${appState.rate.toFixed(2)} BDT/hr.`, 
+                    "success"
+                );
             } catch (err) { 
-                alert("CSV configuration processing failure."); 
+                launchCustomAlertModal("Parser Exception", "An unexpected parsing error occurred while reading the dataset layout matrix lines.", "danger"); 
             }
+            e.target.value = ''; 
         };
         reader.readAsText(file);
     });
 
     document.getElementById('exportCsv').addEventListener('click', () => {
-        if(appState.logs.length === 0) return alert("Ledger datasets are empty.");
-        let csvString = "Date,HoursLogged,AppliedRateBDT,GrossYieldEarningsBDT,EmployeeID,EmployeeName,Designation,Department\n";
+        if (appState.logs.length === 0) return launchCustomAlertModal("Export Aborted", "Operational ledger data history lists arrays are empty.", "warning");
         
-        const eId = `"${appState.employeeInfo.empId || ''}"`;
-        const eName = `"${appState.employeeInfo.empName || ''}"`;
-        const eDesg = `"${appState.employeeInfo.designation || ''}"`;
-        const eDept = `"${appState.employeeInfo.department || ''}"`;
-
+        let csvString = `#EMP_ID:${appState.employeeInfo.empId || 'EMP-001'}\n`;
+        csvString += `#EMP_NAME:${appState.employeeInfo.empName || 'Unconfigured Profile'}\n`;
+        csvString += `#DESIGNATION:${appState.employeeInfo.designation || '—'}\n`;
+        csvString += `#DEPARTMENT:${appState.employeeInfo.department || '—'}\n`;
+        csvString += `#GLOBAL_RATE:${appState.rate.toFixed(2)}\n`;
+        csvString += "Date,HoursLogged,AppliedRateBDT,GrossYieldEarningsBDT\n";
+        
         appState.logs.forEach(x => { 
-            csvString += `"${x.rawDate}",${x.hoursTracked},${x.appliedRate.toFixed(2)},${x.yieldGross.toFixed(2)},${eId},${eName},${eDesg},${eDept}\n`; 
+            csvString += `"${x.rawDate}",${x.hoursTracked},${x.appliedRate.toFixed(2)},${x.yieldGross.toFixed(2)}\n`; 
         });
+
+        const cleanEmpId = (appState.employeeInfo.empId || 'EMP').trim().replace(/[^a-zA-Z0-9-_]/g, '_');
+        const activeYear = new Date().getFullYear();
         
         const link = document.createElement("a"); 
         link.href = URL.createObjectURL(new Blob([csvString], { type: 'text/csv;charset=utf-8;' }));
-        link.setAttribute("download", `OT_Ledger_Backup.csv`); 
-        document.body.appendChild(link); 
-        link.click(); 
-        document.body.removeChild(link);
+        link.setAttribute("download", `OT_Ledger_${cleanEmpId}_${activeYear}.csv`); 
+        link.click();
     });
 
-    document.getElementById('clearData').addEventListener('click', () => {
-        if (confirm("Discard all tracking data?")) {
-            appState.logs = []; localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
-            appState.rate = 250.00; localStorage.setItem('ot_v67_rate', appState.rate);
-            appState.employeeInfo = { empId:'', empName:'', designation:'', department:'' };
-            localStorage.setItem('ot_v67_profile', JSON.stringify(appState.employeeInfo));
-            applyLatestSavedRateOrProfile(); updateViewPipeline();
-        }
-    });
+    document.getElementById('btnPrevDate').addEventListener('click', () => { appState.currentDate.setDate(appState.currentDate.getDate() - 1); syncDatePickerDisplay(); });
+    document.getElementById('btnNextDate').addEventListener('click', () => { appState.currentDate.setDate(appState.currentDate.getDate() + 1); syncDatePickerDisplay(); });
+    DOM.selectParamMonth.addEventListener('change', (e) => { appState.selectedReportMonth = parseInt(e.target.value); refreshModalParameterPreviewData(); });
+    DOM.selectParamYear.addEventListener('change', (e) => { appState.selectedReportYear = parseInt(e.target.value); refreshModalParameterPreviewData(); });
 
-    window.deleteRecordEntry = function(uid) {
-        if(confirm("Delete this entry row?")) {
-            appState.logs = appState.logs.filter(x => x.uid !== uid);
-            localStorage.setItem('ot_v67_logs', JSON.stringify(appState.logs));
-            applyLatestSavedRateOrProfile(); updateViewPipeline();
-        }
-    };
-
-    function updateViewPipeline() {
-        const activeClock = new Date(); const activeYear = activeClock.getFullYear(); const activeMonth = activeClock.getMonth();
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        
-        document.getElementById('monthlyTitle').innerText = `${monthNames[activeMonth]} ${activeYear}`;
-        document.getElementById('yearlyTitle').innerText = `${activeYear} Consolidated Framework`;
-
-        let mHrs = 0, mEarnings = 0, yHrs = 0, yEarnings = 0;
-        const container = document.getElementById('logsTableBody'); container.innerHTML = '';
-
-        appState.logs.forEach(record => {
-            const parsedDate = new Date(record.rawDate);
-            const matchesYear = parsedDate.getFullYear() === activeYear;
-            const matchesMonth = matchesYear && parsedDate.getMonth() === activeMonth;
-
-            if (matchesMonth) { mHrs += record.hoursTracked; mEarnings += record.yieldGross; }
-            if (matchesYear) { yHrs += record.hoursTracked; yEarnings += record.yieldGross; }
-
-            const dayClass = (record.dayName === 'Friday' || record.dayName === 'Saturday') ? 'text-danger fw-bold' : 'text-muted fw-medium';
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="fw-bold text-dark">${record.formattedDate}</td>
-                <td><span class="${dayClass}">${record.dayName}</span></td>
-                <td><span class="badge bg-light text-primary border border-primary-subtle px-2 py-1 fw-bold rounded-1">${record.hoursTracked} hrs</span></td>
-                <td class="text-secondary">${record.appliedRate.toFixed(2)} BDT</td>
-                <td class="text-success fw-bold">${record.yieldGross.toFixed(2)} BDT</td>
-                <td class="text-center">
-                    <div class="d-flex justify-content-center gap-1">
-                        <button class="action-btn action-btn-edit" onclick="launchEditPipelineModal('${record.uid}')" title="Edit Entry">
-                            <i class="bi bi-pencil-square"></i><span>Edit</span>
-                        </button>
-                        <button class="action-btn action-btn-delete" onclick="deleteRecordEntry('${record.uid}')" title="Delete Entry">
-                            <i class="bi bi-trash3-fill"></i><span>Delete</span>
-                        </button>
-                    </div>
-                </td>
-            `;
-            container.appendChild(tr);
-        });
-
-        if (appState.logs.length === 0) {
-            container.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-folder2-open display-6 d-block mb-2 opacity-25"></i>Ledger context arrays unpopulated.</td></tr>`;
-        }
-
-        document.getElementById('monthlyHours').innerText = `${mHrs.toFixed(1)} hrs`;
-        document.getElementById('monthlyEarnings').innerText = `${mEarnings.toFixed(2)} BDT`;
-        document.getElementById('yearlyHours').innerText = `${yHrs.toFixed(1)} hrs`;
-        document.getElementById('yearlyEarnings').innerText = `${yEarnings.toFixed(2)} BDT`;
-    }
-
-    updateViewPipeline();
+    applyLatestSavedRateOrProfile(); syncDatePickerDisplay(); updateViewPipeline();
 </script>
 </body>
 </html>
